@@ -1,0 +1,48 @@
+{
+	"name": "trejjam/acl",
+	"description": "Nette Doctrine ACL",
+	"keywords": [
+		"nette",
+		"doctrine",
+		"acl"
+	],
+	"license": [
+		"MIT"
+	],
+	"authors": [
+		{
+			"name": "Jan Trejbal"
+		}
+	],
+	"support": {
+		"email": "jan.trejbal@gmail.com",
+		"issues": "https://gtlab.trem.in/Trejjam/acl/issues"
+	},
+	"require": {
+		"php": ">=5.4",
+
+		"nette/di": "~2.4",
+		"kdyby/doctrine": "^3.1"
+	},
+	"require-dev": {
+		"nette/tester": "@dev",
+
+		"kdyby/console": "~2.6"
+	},
+	"suggest": {
+
+	},
+	"autoload": {
+		"psr-4": {
+			"Trejjam\\Acl\\": "src/"
+		},
+		"classmap": [
+			"src/exceptions.php"
+		]
+	},
+	"extra": {
+		"branch-alias": {
+			"dev-master": "v0.4.x-dev"
+		}
+	}
+}
