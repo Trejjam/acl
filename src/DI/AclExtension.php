@@ -16,6 +16,7 @@ class AclExtension extends Trejjam\BaseExtension\DI\BaseExtension implements IEn
 	protected $classesDefinition = [
 		'user.service'    => Trejjam\Acl\Entity\User\UserService::class,
 		'user.repository' => Trejjam\Acl\Entity\User\UserRepository::class,
+		'user.facade'     => Trejjam\Acl\Entity\User\UserFacade::class,
 		'authenticator'   => Trejjam\Acl\Authenticator::class,
 		'authorizator'    => Trejjam\Acl\Authorizator::class,
 	];

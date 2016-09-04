@@ -26,14 +26,19 @@ class UserFacade
 	}
 
 	/**
-	 * @param $username
+	 * @param string      $username
+	 * @param string|null $password
 	 *
 	 * @return User
 	 * @throws \Doctrine\ORM\OptimisticLockException
 	 */
-	public function createUser($username)
+	public function createUser($username, $password = NULL)
 	{
 		$user = $this->userService->createUser($username);
+
+		if ( !is_null($password)) {
+			$user->hashPassword($password);
+		}
 
 		$this->em->persist($user);
 		$this->em->flush();

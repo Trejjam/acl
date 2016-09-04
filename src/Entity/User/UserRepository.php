@@ -34,6 +34,12 @@ class UserRepository
 		}
 	}
 
+	/**
+	 * @param string $username
+	 *
+	 * @return User
+	 * @throws Doctrine\ORM\NonUniqueResultException
+	 */
 	public function getByUsername($username)
 	{
 		try {

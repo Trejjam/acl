@@ -58,7 +58,9 @@ class User implements Nette\Security\IIdentity
 	public function __construct($username = NULL)
 	{
 		$this->username = $username;
+		$this->status = StatusType::ENABLE;
 		$this->roles = new Doctrine\Common\Collections\ArrayCollection;
+		$this->createdDate = new Nette\Utils\DateTime;
 	}
 
 	/**
@@ -69,6 +71,21 @@ class User implements Nette\Security\IIdentity
 	function getId()
 	{
 		return $this->id;
+	}
+
+	public function getUsername()
+	{
+		return $this->username;
+	}
+
+	public function getStatus()
+	{
+		return $this->status;
+	}
+
+	public function getPassword()
+	{
+		return $this->password;
 	}
 
 	public function hashPassword($password)
