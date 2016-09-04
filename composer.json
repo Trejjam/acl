@@ -26,6 +26,7 @@
 	},
 	"require-dev": {
 		"nette/tester": "@dev",
+		"nette/security": "~2.4.0",
 
 		"kdyby/console": "~2.6"
 	},
