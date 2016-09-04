@@ -13,15 +13,23 @@ class Authenticator implements Nette\Security\IAuthenticator
 	 * @var Entity\User\UserRepository
 	 */
 	private $userRepository;
+	/**
+	 * @var Entity\User\UserFacade
+	 */
+	private $userFacade;
 
 	/**
 	 * Authenticator constructor.
 	 *
 	 * @param Entity\User\UserRepository $userRepository
+	 * @param Entity\User\UserFacade     $userFacade
 	 */
-	function __construct(Trejjam\Acl\Entity\User\UserRepository $userRepository)
-	{
+	function __construct(
+		Trejjam\Acl\Entity\User\UserRepository $userRepository,
+		Trejjam\Acl\Entity\User\UserFacade $userFacade
+	) {
 		$this->userRepository = $userRepository;
+		$this->userFacade = $userFacade;
 	}
 
 	/**
@@ -47,7 +55,7 @@ class Authenticator implements Nette\Security\IAuthenticator
 			throw new Trejjam\Acl\Entity\User\InvalidCredentialsException($username);
 		}
 		else if (Nette\Security\Passwords::needsRehash($user->getPassword())) {
-			$this->userRepository->changePassword($user, $password);
+			$this->userFacade->changePassword($user, $password);
 		}
 
 		return $user;

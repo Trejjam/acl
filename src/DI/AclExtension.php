@@ -11,6 +11,7 @@ class AclExtension extends Trejjam\BaseExtension\DI\BaseExtension implements IEn
 {
 	protected $default = [
 		'createMissingResource' => TRUE,
+		'userClassName'         => NULL,
 	];
 
 	protected $classesDefinition = [
@@ -20,6 +21,30 @@ class AclExtension extends Trejjam\BaseExtension\DI\BaseExtension implements IEn
 		'authenticator'   => Trejjam\Acl\Authenticator::class,
 		'authorizator'    => Trejjam\Acl\Authorizator::class,
 	];
+
+	public function loadConfiguration()
+	{
+		parent::loadConfiguration();
+
+		$config = $this->createConfig();
+
+		$classes = $this->getClasses();
+
+		$classes['user.service']->setArguments(
+			[
+				$config['userClassName'],
+			]
+		);
+		$classes['user.repository']->setArguments(
+			[
+				$config['userClassName'],
+			]
+		);
+
+		$containerBuilder = $this->getContainerBuilder();
+		$containerBuilder->getDefinition('security.userStorage')
+						 ->setFactory(Trejjam\Acl\UserStorage::class);
+	}
 
 	/**
 	 * Returns associative array of Namespace => mapping definition

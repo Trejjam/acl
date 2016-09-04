@@ -3,7 +3,7 @@
 namespace Trejjam\Acl\Entity\User;
 
 use Nette;
-use Doctrine\ORM\EntityManager;
+use Kdyby\Doctrine\EntityManager;
 use Trejjam;
 
 class UserFacade
@@ -30,7 +30,7 @@ class UserFacade
 	 * @param string|null $password
 	 *
 	 * @return User
-	 * @throws \Doctrine\ORM\OptimisticLockException
+	 * @throws \Exception
 	 */
 	public function createUser($username, $password = NULL)
 	{
@@ -44,5 +44,31 @@ class UserFacade
 		$this->em->flush();
 
 		return $user;
+	}
+
+	public function updateUser(User $user)
+	{
+		$this->em->beginTransaction();
+
+		try {
+			$user->flush($this->em);
+			$this->em->flush($user);
+
+			$this->em->commit();
+		}
+		catch (\Exception $e) {
+			$this->em->rollback();
+
+			throw $e;
+		}
+
+		return $user;
+	}
+
+	public function changePassword(User $user, $password)
+	{
+		$user->hashPassword($password);
+
+		$this->updateUser($user);
 	}
 }

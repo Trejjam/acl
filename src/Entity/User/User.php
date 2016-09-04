@@ -5,14 +5,15 @@ namespace Trejjam\Acl\Entity\User;
 use Nette;
 use Doctrine;
 use Doctrine\ORM\Mapping as ORM;
+use Kdyby\Doctrine\EntityManager;
 use Trejjam;
 use Trejjam\Acl\Entity;
 
 /**
- * @ORM\Entity()
+ * @ORM\MappedSuperclass
  * @ORM\Table(name="`user`")
  */
-class User implements Nette\Security\IIdentity
+abstract class User implements Nette\Security\IIdentity
 {
 	/**
 	 * @ORM\Id()
@@ -66,9 +67,9 @@ class User implements Nette\Security\IIdentity
 	/**
 	 * Returns the ID of user.
 	 *
-	 * @return mixed
+	 * @return int
 	 */
-	function getId()
+	public function getId()
 	{
 		return $this->id;
 	}
@@ -98,8 +99,13 @@ class User implements Nette\Security\IIdentity
 	 *
 	 * @return array
 	 */
-	function getRoles()
+	public function getRoles()
 	{
 		return $this->roles;
+	}
+
+	public function flush(EntityManager $entityManager)
+	{
+
 	}
 }

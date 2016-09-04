@@ -4,18 +4,25 @@ namespace Trejjam\Acl\Entity\User;
 
 use Nette;
 use Doctrine;
-use Doctrine\ORM\EntityManager;
+use Kdyby\Doctrine\EntityManager;
 use Trejjam;
 
 class UserRepository
 {
 	/**
+	 * @var string
+	 */
+	private $userClassName;
+	/**
 	 * @var EntityManager
 	 */
 	private $em;
 
-	public function __construct(EntityManager $em)
-	{
+	public function __construct(
+		$userClassName = NULL,
+		EntityManager $em
+	) {
+		$this->userClassName = $userClassName ?: User::class;
 		$this->em = $em;
 	}
 
@@ -24,7 +31,7 @@ class UserRepository
 		try {
 			return $this->em->createQueryBuilder()
 							->select('user')
-							->from(User::class, 'user')
+							->from($this->userClassName, 'user')
 							->andWhere('user.id = :id')->setParameter('id', $userId)
 							->getQuery()
 							->getSingleResult();
@@ -45,7 +52,7 @@ class UserRepository
 		try {
 			return $this->em->createQueryBuilder()
 							->select('user')
-							->from(User::class, 'user')
+							->from($this->userClassName, 'user')
 							->andWhere('user.username = :username')->setParameter('username', $username)
 							->getQuery()
 							->getSingleResult();
@@ -53,13 +60,5 @@ class UserRepository
 		catch (Doctrine\ORM\NoResultException $e) {
 			throw new UserNotFoundException($username, $e);
 		}
-	}
-
-	public function changePassword(User $user, $password)
-	{
-		$user->hashPassword($password);
-
-		$this->em->persist($user);
-		$this->em->flush();
 	}
 }
