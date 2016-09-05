@@ -26,6 +26,12 @@ class UserRepository
 		$this->em = $em;
 	}
 
+	/**
+	 * @param $userId
+	 *
+	 * @return User
+	 * @throws Doctrine\ORM\NonUniqueResultException
+	 */
 	public function getById($userId)
 	{
 		try {
