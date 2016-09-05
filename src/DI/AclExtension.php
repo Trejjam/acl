@@ -11,7 +11,10 @@ class AclExtension extends Trejjam\BaseExtension\DI\BaseExtension implements IEn
 {
 	protected $default = [
 		'createMissingResource' => TRUE,
-		'userClassName'         => NULL,
+		'user'                  => [
+			'className' => NULL,
+			'autoFetch' => TRUE,
+		],
 	];
 
 	protected $classesDefinition = [
@@ -32,18 +35,23 @@ class AclExtension extends Trejjam\BaseExtension\DI\BaseExtension implements IEn
 
 		$classes['user.service']->setArguments(
 			[
-				$config['userClassName'],
+				$config['user']['className'],
 			]
 		);
 		$classes['user.repository']->setArguments(
 			[
-				$config['userClassName'],
+				$config['user']['className'],
 			]
 		);
 
 		$containerBuilder = $this->getContainerBuilder();
 		$containerBuilder->getDefinition('security.userStorage')
-						 ->setFactory(Trejjam\Acl\UserStorage::class);
+						 ->setFactory(Trejjam\Acl\UserStorage::class)
+						 ->setArguments(
+							 [
+								 'autoFetchUser' => $config['user']['autoFetch'],
+							 ]
+						 );
 	}
 
 	/**
