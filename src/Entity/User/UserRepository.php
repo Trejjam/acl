@@ -3,6 +3,7 @@
 namespace Trejjam\Acl\Entity\User;
 
 use Doctrine;
+use Trejjam\Acl\Entity;
 use Kdyby\Doctrine\EntityManager;
 use Trejjam;
 
@@ -71,6 +72,26 @@ class UserRepository
 		}
 		catch (Doctrine\ORM\NoResultException $e) {
 			throw new UserNotFoundException($username, $e);
+		}
+	}
+
+	public function getCountActivated($activated = StatusActivated::STATE_ACTIVATED)
+	{
+		if ( !in_array($activated, StatusActivated::getValues())) {
+			throw new Trejjam\Acl\InvalidArgumentException;
+		}
+
+		try {
+			$query = $this->em->createQueryBuilder()
+							  ->select('COUNT(user.id)')
+							  ->from($this->userClassName, 'user')
+							  ->andWhere('user.activated = :activated')->setParameter('activated', $activated);
+
+			return $query->getQuery()
+						 ->getSingleScalarResult();
+		}
+		catch (Doctrine\ORM\NoResultException $e) {
+			throw $e;
 		}
 	}
 

@@ -30,6 +30,12 @@ abstract class User implements Nette\Security\IIdentity
 	protected $status;
 
 	/**
+	 * @ORM\Column(type="statusActivated", options={"default":StatusActivated::STATE_INACTIVE})
+	 * @var string
+	 */
+	protected $activated;
+
+	/**
 	 * @ORM\Column(type="string", unique=true)
 	 * @var string
 	 */
@@ -61,6 +67,7 @@ abstract class User implements Nette\Security\IIdentity
 	{
 		$this->username = $username;
 		$this->status = StatusType::STATE_ENABLE;
+		$this->activated = StatusActivated::STATE_INACTIVE;
 		$this->roles = new Doctrine\Common\Collections\ArrayCollection;
 		$this->createdDate = new Nette\Utils\DateTime;
 	}
@@ -75,24 +82,52 @@ abstract class User implements Nette\Security\IIdentity
 		return $this->id;
 	}
 
+	/**
+	 * @return string
+	 */
 	public function getUsername()
 	{
 		return $this->username;
 	}
 
+	/**
+	 * @return string
+	 */
 	public function getStatus()
 	{
 		return $this->status;
 	}
 
+	/**
+	 * @return string
+	 */
 	public function getPassword()
 	{
 		return $this->password;
 	}
 
+	/**
+	 * @param $password
+	 *
+	 * @return $this
+	 */
 	public function hashPassword($password)
 	{
 		$this->password = Nette\Security\Passwords::hash($password);
+
+		return $this;
+	}
+
+	/**
+	 * @param string $activated
+	 *
+	 * @return $this
+	 */
+	public function setActivated($activated = StatusActivated::STATE_ACTIVATED)
+	{
+		$this->activated = $activated;
+
+		return $this;
 	}
 
 	/**

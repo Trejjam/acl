@@ -112,6 +112,7 @@ class AclExtension extends Trejjam\BaseExtension\DI\BaseExtension implements IEn
 
 		return [
 			'statusEnum'         => Trejjam\Acl\Entity\User\StatusType::class,
+			'statusActivated'    => Trejjam\Acl\Entity\User\StatusActivated::class,
 			'permissionEnum'     => Trejjam\Acl\Entity\Resource\PermissionType::class,
 			'userRequestType'    => $config['request']['typeClass'],
 			'identityHashStatus' => Trejjam\Acl\Entity\IdentityHash\IdentityHashStatus::class,
