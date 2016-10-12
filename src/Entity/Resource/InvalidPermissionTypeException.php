@@ -1,6 +1,6 @@
 <?php
 
-namespace Trejjam\Acl\Entity\UserResource;
+namespace Trejjam\Acl\Entity\Resource;
 
 use Trejjam;
 

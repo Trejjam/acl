@@ -2,7 +2,6 @@
 
 namespace Trejjam\Acl\Entity\User;
 
-use Nette;
 use Doctrine;
 use Kdyby\Doctrine\EntityManager;
 use Trejjam;
@@ -19,10 +18,10 @@ class UserRepository
 	private $em;
 
 	public function __construct(
-		$userClassName = NULL,
+		$userClassName,
 		EntityManager $em
 	) {
-		$this->userClassName = $userClassName ?: User::class;
+		$this->userClassName = $userClassName;
 		$this->em = $em;
 	}
 
@@ -48,23 +47,37 @@ class UserRepository
 	}
 
 	/**
-	 * @param string $username
+	 * @param string      $username
+	 * @param string|null $fetchType
 	 *
 	 * @return User
 	 * @throws Doctrine\ORM\NonUniqueResultException
 	 */
-	public function getByUsername($username)
+	public function getByUsername($username, $fetchType = NULL)
 	{
 		try {
-			return $this->em->createQueryBuilder()
-							->select('user')
-							->from($this->userClassName, 'user')
-							->andWhere('user.username = :username')->setParameter('username', $username)
-							->getQuery()
-							->getSingleResult();
+			$query = $this->em->createQueryBuilder()
+							  ->select('user')
+							  ->from($this->userClassName, 'user')
+							  ->andWhere('user.username = :username')->setParameter('username', $username)
+
+							  ->getQuery();
+
+			if ( !is_null($fetchType)) {
+				$query->setFetchMode($this->userClassName, 'roles', $fetchType);
+			}
+
+			return $query->getSingleResult();
 		}
 		catch (Doctrine\ORM\NoResultException $e) {
 			throw new UserNotFoundException($username, $e);
 		}
+	}
+
+	public function mergeCached(User $user)
+	{
+		$this->em->merge($user);
+
+		return $this;
 	}
 }

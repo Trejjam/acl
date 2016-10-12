@@ -2,54 +2,24 @@
 
 namespace Trejjam\Acl\Entity\User;
 
-use Nette;
 use Doctrine;
-use Kdyby\Doctrine\Types\Enum;
+use Trejjam\Acl\Entity;
 use Trejjam;
 
-class StatusType extends Enum
+class StatusType extends Entity\Enum
 {
-	const STATUS_ENUM = 'statusEnum';
-	const ENABLE      = 'enable';
-	const DISABLE     = 'disable';
-	const DELETE      = 'delete';
+	const ENUM_NAME = 'statusEnum';
 
-	protected function getValues()
+	const STATE_ENABLE  = 'enable';
+	const STATE_DISABLE = 'disable';
+	const STATE_DELETE  = 'delete';
+
+	static public function getValues()
 	{
 		return [
-			self::ENABLE,
-			self::DISABLE,
-			self::DELETE,
+			self::STATE_ENABLE,
+			self::STATE_DISABLE,
+			self::STATE_DELETE,
 		];
-	}
-
-	public function getSQLDeclaration(array $fieldDeclaration, Doctrine\DBAL\Platforms\AbstractPlatform $platform)
-	{
-		return sprintf(
-			'ENUM(%s)',
-			implode(
-				', ',
-				array_map(function ($arr) {
-					return "'" . $arr . "'";
-				}, $this->getValues())
-			), $this->getName()
-		);
-	}
-
-	public function convertToDatabaseValue($value, Doctrine\DBAL\Platforms\AbstractPlatform $platform)
-	{
-		if ( !in_array($value, $this->getValues())) {
-			throw new InvalidStatusException("Invalid status");
-		}
-
-		return $value;
-	}
-
-	/**
-	 * @return string
-	 */
-	public function getName()
-	{
-		return static::STATUS_ENUM;
 	}
 }

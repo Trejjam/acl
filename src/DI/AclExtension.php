@@ -15,12 +15,30 @@ class AclExtension extends Trejjam\BaseExtension\DI\BaseExtension implements IEn
 			'className' => NULL,
 			'autoFetch' => TRUE,
 		],
+		'request'               => [
+			'typeClass' => Trejjam\Acl\Entity\Request\RequestType::class,
+			'timeout'   => '3 hours',
+		],
 	];
 
 	protected $classesDefinition = [
 		'user.service'    => Trejjam\Acl\Entity\User\UserService::class,
 		'user.repository' => Trejjam\Acl\Entity\User\UserRepository::class,
 		'user.facade'     => Trejjam\Acl\Entity\User\UserFacade::class,
+
+		'request.service'    => Trejjam\Acl\Entity\Request\RequestService::class,
+		'request.repository' => Trejjam\Acl\Entity\Request\RequestRepository::class,
+		'request.facade'     => Trejjam\Acl\Entity\Request\RequestFacade::class,
+
+		'identityHash.service'    => Trejjam\Acl\Entity\IdentityHash\IdentityHashService::class,
+		'identityHash.repository' => Trejjam\Acl\Entity\IdentityHash\IdentityHashRepository::class,
+		'identityHash.facade'     => Trejjam\Acl\Entity\IdentityHash\IdentityHashFacade::class,
+
+		'role.service'    => Trejjam\Acl\Entity\Role\RoleService::class,
+		'role.repository' => Trejjam\Acl\Entity\Role\RoleRepository::class,
+		'role.facade'     => Trejjam\Acl\Entity\Role\RoleFacade::class,
+		'role.cache'      => Nette\Caching\Cache::class,
+
 		'authenticator'   => Trejjam\Acl\Authenticator::class,
 		'authorizator'    => Trejjam\Acl\Authorizator::class,
 	];
@@ -44,6 +62,19 @@ class AclExtension extends Trejjam\BaseExtension\DI\BaseExtension implements IEn
 			]
 		);
 
+		$classes['request.service']->setArguments(
+			[
+				$config['request']['timeout'],
+			]
+		);
+
+		$classes['role.repository']->setArguments(
+			[
+				1 => $this->prefix('@role.cache'),
+			]
+		);
+		$classes['role.cache']->setAutowired(FALSE);
+
 		$containerBuilder = $this->getContainerBuilder();
 		$containerBuilder->getDefinition('security.userStorage')
 						 ->setFactory(Trejjam\Acl\UserStorage::class)
@@ -52,6 +83,9 @@ class AclExtension extends Trejjam\BaseExtension\DI\BaseExtension implements IEn
 								 'autoFetchUser' => $config['user']['autoFetch'],
 							 ]
 						 );
+
+		$containerBuilder->getDefinition('security.user')
+						 ->setClass(Trejjam\Acl\User::class);
 	}
 
 	/**
@@ -59,7 +93,7 @@ class AclExtension extends Trejjam\BaseExtension\DI\BaseExtension implements IEn
 	 *
 	 * @return array
 	 */
-	function getEntityMappings()
+	public function getEntityMappings()
 	{
 		return [
 			'Trejjam\Acl\Entity' => implode(DIRECTORY_SEPARATOR, [__DIR__, '..', 'Entity']),
@@ -70,12 +104,17 @@ class AclExtension extends Trejjam\BaseExtension\DI\BaseExtension implements IEn
 	 * Returns array of typeName => typeClass.
 	 *
 	 * @return array
+	 * @throws Nette\Utils\AssertionException
 	 */
-	function getDatabaseTypes()
+	public function getDatabaseTypes()
 	{
+		$config = $this->createConfig();
+
 		return [
-			'statusEnum'     => Trejjam\Acl\Entity\User\StatusType::class,
-			'permissionEnum' => Trejjam\Acl\Entity\UserResource\PermissionType::class,
+			'statusEnum'         => Trejjam\Acl\Entity\User\StatusType::class,
+			'permissionEnum'     => Trejjam\Acl\Entity\Resource\PermissionType::class,
+			'userRequestType'    => $config['request']['typeClass'],
+			'identityHashStatus' => Trejjam\Acl\Entity\IdentityHash\IdentityHashStatus::class,
 		];
 	}
 }

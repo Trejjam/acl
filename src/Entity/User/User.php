@@ -11,7 +11,7 @@ use Trejjam\Acl\Entity;
 
 /**
  * @ORM\MappedSuperclass
- * @ORM\Table(name="`user`")
+ * @ORM\Table(name="`users__users`")
  */
 abstract class User implements Nette\Security\IIdentity
 {
@@ -21,45 +21,46 @@ abstract class User implements Nette\Security\IIdentity
 	 * @ORM\GeneratedValue
 	 * @var integer
 	 */
-	private $id;
+	protected $id;
 
 	/**
-	 * @ORM\Column(type="statusEnum", options={"default":StatusType::ENABLE})
+	 * @ORM\Column(type="statusEnum", options={"default":StatusType::STATE_ENABLE})
 	 * @var string
 	 */
-	private $status;
+	protected $status;
 
 	/**
 	 * @ORM\Column(type="string", unique=true)
 	 * @var string
 	 */
-	private $username;
+	protected $username;
 
 	/**
 	 * @ORM\Column(type="string", nullable=true)
 	 * @var string
 	 */
-	private $password;
+	protected $password;
 
 	/**
 	 * @ORM\Column(type="datetime")
 	 * @var \DateTime
 	 */
-	private $createdDate;
+	protected $createdDate;
 
 	/**
-	 * @ORM\ManyToMany(targetEntity=Entity\UserRole\UserRole::class)
-	 * @ORM\JoinTable(name="user_role",
+	 * @var Entity\Role\Role[]|Doctrine\ORM\PersistentCollection|Doctrine\Common\Collections\ArrayCollection
+	 * @ORM\ManyToMany(targetEntity=Entity\Role\Role::class)
+	 * @ORM\JoinTable(name="users__user_role",
 	 *        joinColumns={@ORM\JoinColumn(name="user_id", referencedColumnName="id")},
-	 *        inverseJoinColumns={@ORM\JoinColumn(name="group_id", referencedColumnName="id")}
+	 *        inverseJoinColumns={@ORM\JoinColumn(name="role_id", referencedColumnName="id")}
 	 *    )
 	 */
-	private $roles;
+	protected $roles;
 
 	public function __construct($username = NULL)
 	{
 		$this->username = $username;
-		$this->status = StatusType::ENABLE;
+		$this->status = StatusType::STATE_ENABLE;
 		$this->roles = new Doctrine\Common\Collections\ArrayCollection;
 		$this->createdDate = new Nette\Utils\DateTime;
 	}
@@ -97,7 +98,7 @@ abstract class User implements Nette\Security\IIdentity
 	/**
 	 * Returns a list of roles that the user is a member of.
 	 *
-	 * @return array
+	 * @return Trejjam\Authorization\Acl\Role[]|Doctrine\Common\Collections\ArrayCollection
 	 */
 	public function getRoles()
 	{
@@ -107,5 +108,21 @@ abstract class User implements Nette\Security\IIdentity
 	public function flush(EntityManager $entityManager)
 	{
 
+	}
+
+	public function fetchRoles()
+	{
+		if ($this->roles instanceof Doctrine\ORM\PersistentCollection || $this->roles instanceof Doctrine\Common\Collections\ArrayCollection) {
+			$this->roles = $this->roles->getValues();
+
+			foreach ($this->roles as $role) {
+				$role->fetchChild(TRUE);
+			}
+		}
+		else {
+			throw new \LogicException('Roles are already fetched');
+		}
+
+		return $this;
 	}
 }

@@ -2,6 +2,7 @@
 
 namespace Trejjam\Acl;
 
+use Doctrine;
 use Nette;
 use Nette\Security\AuthenticationException;
 use Nette\Security\IIdentity;
@@ -38,7 +39,7 @@ class Authenticator implements Nette\Security\IAuthenticator
 	 *
 	 * @param array $credentials
 	 *
-	 * @return IIdentity
+	 * @return IIdentity|Entity\User\User
 	 * @throws \Doctrine\ORM\NonUniqueResultException
 	 * @throws AuthenticationException
 	 */
@@ -46,7 +47,7 @@ class Authenticator implements Nette\Security\IAuthenticator
 	{
 		list($username, $password) = $credentials;
 
-		$user = $this->userRepository->getByUsername($username);
+		$user = $this->userRepository->getByUsername($username, Doctrine\ORM\Mapping\ClassMetadata::FETCH_EAGER);
 
 		if (is_null($user->getPassword())) {
 			throw new Trejjam\Acl\Entity\User\NotDefinedPasswordException($username);
@@ -57,6 +58,8 @@ class Authenticator implements Nette\Security\IAuthenticator
 		else if (Nette\Security\Passwords::needsRehash($user->getPassword())) {
 			$this->userFacade->changePassword($user, $password);
 		}
+
+		$user->fetchRoles();
 
 		return $user;
 	}

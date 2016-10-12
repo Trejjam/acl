@@ -1,6 +1,6 @@
 <?php
 
-namespace Trejjam\Acl\Entity\UserResource;
+namespace Trejjam\Acl\Entity\Resource;
 
 use Nette;
 use Doctrine;
@@ -10,9 +10,10 @@ use Trejjam\Acl\Entity;
 
 /**
  * @ORM\Entity()
- * @ORM\Table(name="`resource`")
+ * @ORM\Table(name="`users__resources`")
+ * @ORM\Cache(usage="READ_ONLY")
  */
-class UserResource
+class Resource
 {
 	/**
 	 * @ORM\Id()
@@ -23,9 +24,9 @@ class UserResource
 	private $id;
 
 	/**
-	 * @ORM\ManyToOne(targetEntity=Entity\UserRole\UserRole::class, cascade={"persist"})
+	 * @ORM\ManyToOne(targetEntity=Entity\Role\Role::class, cascade={"persist"})
 	 * @ORM\JoinColumn(name="role_id", referencedColumnName="id")
-	 * @var Entity\UserRole\UserRole
+	 * @var Entity\Role\Role
 	 */
 	private $parent;
 
@@ -42,9 +43,9 @@ class UserResource
 	private $action;
 
 	/**
-	 * @ORM\ManyToOne(targetEntity=Entity\UserRole\UserRole::class, inversedBy="resources")
+	 * @ORM\ManyToOne(targetEntity=Entity\Role\Role::class, inversedBy="resources")
 	 * @ORM\JoinColumn(name="role_id", referencedColumnName="id")
-	 * @var Entity\UserRole\UserRole
+	 * @var Entity\Role\Role
 	 */
 	private $role;
 
@@ -70,5 +71,13 @@ class UserResource
 		}
 
 		return $this->action;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getPermissionType()
+	{
+		return $this->permissionType;
 	}
 }

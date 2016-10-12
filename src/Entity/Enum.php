@@ -1,24 +1,18 @@
 <?php
 
-namespace Trejjam\Acl\Entity\UserResource;
+namespace Trejjam\Acl\Entity;
 
-use Nette;
 use Doctrine;
-use Kdyby\Doctrine\Types\Enum;
-use Trejjam;
+use Kdyby;
+use Nette;
 
-class PermissionType extends Enum
+abstract class Enum extends Kdyby\Doctrine\Types\Enum
 {
-	const STATUS_ENUM = 'permissionEnum';
-	const ALLOW       = 'allow';
-	const DENY        = 'deny';
+	const ENUM_NAME = 'DEFINE ME!';
 
-	protected function getValues()
+	static public function getValues()
 	{
-		return [
-			self::ALLOW,
-			self::DENY,
-		];
+		throw new Nette\NotImplementedException;
 	}
 
 	public function getSQLDeclaration(array $fieldDeclaration, Doctrine\DBAL\Platforms\AbstractPlatform $platform)
@@ -37,7 +31,7 @@ class PermissionType extends Enum
 	public function convertToDatabaseValue($value, Doctrine\DBAL\Platforms\AbstractPlatform $platform)
 	{
 		if ( !in_array($value, $this->getValues())) {
-			throw new InvalidPermissionTypeException("Invalid status");
+			throw new InvalidStatusException("Invalid status");
 		}
 
 		return $value;
@@ -48,6 +42,6 @@ class PermissionType extends Enum
 	 */
 	public function getName()
 	{
-		return static::STATUS_ENUM;
+		return static::ENUM_NAME;
 	}
 }

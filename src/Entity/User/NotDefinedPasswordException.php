@@ -5,7 +5,7 @@ namespace Trejjam\Acl\Entity\User;
 use Nette;
 use Trejjam;
 
-class NotDefinedPasswordException extends Trejjam\Acl\AuthenticatorException
+class NotDefinedPasswordException extends \LogicException implements Trejjam\Acl\Entity\User\AuthenticatorException
 {
 
 }

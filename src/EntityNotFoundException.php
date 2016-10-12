@@ -2,9 +2,7 @@
 
 namespace Trejjam\Acl;
 
-use Trejjam;
-
-abstract class AuthenticatorException extends \InvalidArgumentException
+class EntityNotFoundException extends InvalidArgumentException
 {
 	/**
 	 * @var string

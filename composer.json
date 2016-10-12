@@ -6,17 +6,15 @@
 		"doctrine",
 		"acl"
 	],
-	"license": [
-		"MIT"
-	],
+	"license": "MIT",
 	"authors": [
 		{
 			"name": "Jan Trejbal"
 		}
 	],
 	"support": {
-		"email": "jan.trejbal@gmail.com",
-		"issues": "https://gtlab.trem.in/Trejjam/acl/issues"
+		"email": "jan.trejbal@tremi.cz",
+		"issues": "https://gitlab.trem.in/trejjam/acl/issues"
 	},
 	"require": {
 		"php": ">=5.4",
@@ -36,10 +34,7 @@
 	"autoload": {
 		"psr-4": {
 			"Trejjam\\Acl\\": "src/"
-		},
-		"classmap": [
-			"src/exceptions.php"
-		]
+		}
 	},
 	"extra": {
 		"branch-alias": {

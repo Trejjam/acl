@@ -53,8 +53,9 @@ class UserStorage extends Nette\Http\UserStorage
 		else if ($this->identity) {
 			$identity = $this->identity;
 		}
-		else if ($session) {
-			$identity = $this->identity = $this->userRepository->getById($session->identity->getId());
+		else if ($session && !is_null($session->identity)) {
+			$this->userRepository->mergeCached($session->identity);
+			$identity = $this->identity = $session->identity;
 		}
 
 		return $identity;
