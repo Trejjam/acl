@@ -48,7 +48,7 @@ abstract class User implements Nette\Security\IIdentity
 	protected $password;
 
 	/**
-	 * @ORM\Column(type="datetime")
+	 * @ORM\Column(name="date_created", type="datetime")
 	 * @var \DateTime
 	 */
 	protected $createdDate;
