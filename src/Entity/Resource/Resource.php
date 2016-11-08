@@ -64,12 +64,22 @@ class Resource
 		return $this->name;
 	}
 
+	public function getRawName()
+	{
+		return $this->name;
+	}
+
 	public function getAction()
 	{
 		if (defined(Nette\Security\IAuthorizator::class . '::' . $this->action)) {
 			return constant(Nette\Security\IAuthorizator::class . '::' . $this->action);
 		}
 
+		return $this->action;
+	}
+
+	public function getRawAction()
+	{
 		return $this->action;
 	}
 

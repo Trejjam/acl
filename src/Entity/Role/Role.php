@@ -111,10 +111,10 @@ class Role
 		foreach ($this->resources as $_resource) {
 			$resourceName = $_resource->getName();
 
-			if ($resourceName === 'ALL' || $resourceName === $resource) {
+			if ($resourceName === Nette\Security\IAuthorizator::ALL || $resourceName === $resource) {
 				$resourceAction = $_resource->getAction();
 
-				if ($resourceAction === 'ALL' || $resourceAction === $privilege) {
+				if ($resourceAction === Nette\Security\IAuthorizator::ALL || $resourceAction === $privilege) {
 					return $_resource->getPermissionType() === Entity\Resource\PermissionType::ALLOW;
 				}
 			}
