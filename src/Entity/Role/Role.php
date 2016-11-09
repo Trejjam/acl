@@ -4,6 +4,7 @@ namespace Trejjam\Acl\Entity\Role;
 
 use Nette;
 use Doctrine;
+use Kdyby;
 use Doctrine\ORM\Mapping as ORM;
 use Trejjam;
 use Trejjam\Acl\Entity;
@@ -15,13 +16,7 @@ use Trejjam\Acl\Entity;
  */
 class Role
 {
-	/**
-	 * @ORM\Id()
-	 * @ORM\Column(type="integer")
-	 * @ORM\GeneratedValue
-	 * @var integer
-	 */
-	private $id;
+	use Kdyby\Doctrine\Entities\Attributes\Identifier;
 
 	/**
 	 * @ORM\OneToMany(targetEntity=Role::class, mappedBy="parent")
@@ -80,6 +75,7 @@ class Role
 	 * @param bool $unlinkParent
 	 *
 	 * @return $this
+	 * @throws \LogicException
 	 */
 	public function fetchChild($unlinkParent = FALSE)
 	{

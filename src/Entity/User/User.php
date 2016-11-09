@@ -4,6 +4,7 @@ namespace Trejjam\Acl\Entity\User;
 
 use Nette;
 use Doctrine;
+use Kdyby;
 use Doctrine\ORM\Mapping as ORM;
 use Kdyby\Doctrine\EntityManager;
 use Trejjam;

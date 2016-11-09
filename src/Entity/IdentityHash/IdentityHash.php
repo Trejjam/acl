@@ -3,8 +3,11 @@
 namespace Trejjam\Acl\Entity\IdentityHash;
 
 use Nette;
-use Trejjam\Acl\Entity;
+use Doctrine;
+use Kdyby;
 use Doctrine\ORM\Mapping as ORM;
+use Trejjam;
+use Trejjam\Acl\Entity;
 
 /**
  * IdentityHash
@@ -14,15 +17,9 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class IdentityHash
 {
+	use Kdyby\Doctrine\Entities\Attributes\Identifier;
+
 	const HASH_LENGTH = 10;
-	/**
-	 * @var integer
-	 *
-	 * @ORM\Column(name="id", type="integer", nullable=false)
-	 * @ORM\Id
-	 * @ORM\GeneratedValue(strategy="IDENTITY")
-	 */
-	private $id;
 
 	/**
 	 * @var string
@@ -41,7 +38,7 @@ class IdentityHash
 	/**
 	 * @var string
 	 *
-	 * @ORM\Column(name="action", type="identityStatus", options={"default":IdentityStatus::STATE_NONE}, nullable=false)
+	 * @ORM\Column(name="action", type="identityStatus", options={"default":IdentityHashStatus::STATE_NONE}, nullable=false)
 	 */
 	private $action;
 
@@ -61,14 +58,6 @@ class IdentityHash
 		$this->ip = $ip;
 		$this->action = IdentityHashStatus::STATE_NONE;
 		$this->user = $user;
-	}
-
-	/**
-	 * @return int
-	 */
-	public function getId()
-	{
-		return $this->id;
 	}
 
 	/**

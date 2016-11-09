@@ -2,9 +2,12 @@
 
 namespace Trejjam\Acl\Entity\Request;
 
+use Nette;
+use Doctrine;
+use Kdyby;
+use Doctrine\ORM\Mapping as ORM;
 use Trejjam;
 use Trejjam\Acl\Entity;
-use Nette;
 
 /**
  * @ORM\Table(name="users__request", indexes={@ORM\Index(name="user_id", columns={"user_id"})})
@@ -14,14 +17,7 @@ class Request
 {
 	const HASH_LENGTH = 10;
 
-	/**
-	 * @var integer
-	 *
-	 * @ORM\Column(name="id", type="integer", nullable=false)
-	 * @ORM\Id
-	 * @ORM\GeneratedValue(strategy="IDENTITY")
-	 */
-	private $id;
+	use Kdyby\Doctrine\Entities\Attributes\Identifier;
 
 	/**
 	 * @var string
