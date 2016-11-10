@@ -30,7 +30,7 @@ class UserRepository
 	 * @param $userId
 	 *
 	 * @return User
-	 * @throws Doctrine\ORM\NonUniqueResultException
+	 * @throws UserNotFoundException
 	 */
 	public function getById($userId)
 	{
@@ -52,7 +52,7 @@ class UserRepository
 	 * @param string|null $fetchType
 	 *
 	 * @return User
-	 * @throws Doctrine\ORM\NonUniqueResultException
+	 * @throws UserNotFoundException
 	 */
 	public function getByUsername($username, $fetchType = NULL)
 	{
@@ -92,6 +92,32 @@ class UserRepository
 		}
 		catch (Doctrine\ORM\NoResultException $e) {
 			throw $e;
+		}
+	}
+
+	/**
+	 * @param bool $showDisabled
+	 *
+	 * @return User[]
+	 */
+	public function findAll($showDisabled = TRUE)
+	{
+		try {
+			$query = $this->em->createQueryBuilder()
+							  ->select('user')
+							  ->from($this->userClassName, 'user');
+
+			if ($showDisabled === FALSE) {
+				$query->andWhere('user.status = :status')->setParameter('status', StatusType::STATE_ENABLE);
+			}
+
+			$query->orderBy('user.username');
+
+			return $query->getQuery()
+						 ->getResult();
+		}
+		catch (Doctrine\ORM\NoResultException $e) {
+			return [];
 		}
 	}
 
