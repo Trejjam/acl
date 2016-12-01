@@ -25,32 +25,37 @@ abstract class User implements Nette\Security\IIdentity
 	protected $id;
 
 	/**
-	 * @ORM\Column(type="statusEnum", options={"default":StatusType::STATE_ENABLE})
 	 * @var string
+	 *
+	 * @ORM\Column(type="statusEnum", options={"default":StatusType::STATE_ENABLE})
 	 */
 	protected $status;
 
 	/**
-	 * @ORM\Column(type="statusActivated", options={"default":StatusActivated::STATE_INACTIVE})
 	 * @var string
+	 *
+	 * @ORM\Column(type="statusActivated", options={"default":StatusActivated::STATE_INACTIVE})
 	 */
 	protected $activated;
 
 	/**
-	 * @ORM\Column(type="string", unique=true)
 	 * @var string
+	 *
+	 * @ORM\Column(type="string", unique=true)
 	 */
 	protected $username;
 
 	/**
-	 * @ORM\Column(type="string", nullable=true)
 	 * @var string
+	 *
+	 * @ORM\Column(type="string", nullable=true)
 	 */
 	protected $password;
 
 	/**
-	 * @ORM\Column(name="date_created", type="datetime")
 	 * @var \DateTime
+	 *
+	 * @ORM\Column(name="date_created", type="datetime")
 	 */
 	protected $createdDate;
 
