@@ -33,8 +33,21 @@ class User extends Nette\Security\User
 		$this->roleRepository = $roleRepository;
 
 		try {
-			$this->guestRole = $this->roleRepository->getByName(self::ROLE_GUEST, TRUE);
-			$this->authenticatedRole = $this->roleRepository->getByName(self::ROLE_AUTHENTICATED, TRUE);
+			try {
+				$this->guestRole = $this->roleRepository->getByName(self::ROLE_GUEST, TRUE);
+			}
+			catch (Trejjam\Acl\Entity\Role\RoleNotFoundException $e) {
+				//OR create?
+				$this->guestRole = new Entity\Role\Role(self::ROLE_GUEST);
+			}
+
+			try {
+				$this->authenticatedRole = $this->roleRepository->getByName(self::ROLE_AUTHENTICATED, TRUE);
+			}
+			catch (Trejjam\Acl\Entity\Role\RoleNotFoundException $e) {
+				//OR create?
+				$this->authenticatedRole = new Entity\Role\Role(self::ROLE_AUTHENTICATED);
+			}
 		}
 		catch (Doctrine\DBAL\Exception\TableNotFoundException $e) {
 			$this->guestRole = new Entity\Role\Role(self::ROLE_GUEST);
