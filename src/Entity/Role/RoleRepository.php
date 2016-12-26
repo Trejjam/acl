@@ -56,7 +56,8 @@ class RoleRepository
 	 */
 	public function getByName($name, $useCache = FALSE)
 	{
-		if ($useCache) {
+		//It is probably bad idea, need check in bigger project
+		if (FALSE && $useCache) {
 			return $this->cache->load($name, function (&$options = []) use ($name) {
 				$options [Nette\Caching\Cache::EXPIRE] = '+ 20 minutes';
 
