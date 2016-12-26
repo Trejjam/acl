@@ -52,10 +52,20 @@ class Role
 	public function __construct($name, Role $parent = NULL)
 	{
 		$this->name = $name;
-		$this->parent = $parent;
-		$this->parent->addChild($this);
+		$this->setParent($parent);
 		$this->children = new Doctrine\Common\Collections\ArrayCollection;
 		$this->resources = new Doctrine\Common\Collections\ArrayCollection;
+	}
+
+	protected function setParent(Role $role = NULL)
+	{
+		$this->parent = $role;
+
+		if ( !is_null($role)) {
+			$this->parent->addChild($this);
+		}
+
+		return $this;
 	}
 
 	/**
