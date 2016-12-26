@@ -8,6 +8,9 @@ use Trejjam;
 
 class User extends Nette\Security\User
 {
+	const ROLE_GUEST         = 'guest';
+	const ROLE_AUTHENTICATED = 'authenticated';
+
 	protected $roleRepository;
 
 	/**
@@ -30,12 +33,12 @@ class User extends Nette\Security\User
 		$this->roleRepository = $roleRepository;
 
 		try {
-			$this->guestRole = $this->roleRepository->getByName($this->guestRole, TRUE);
-			$this->authenticatedRole = $this->roleRepository->getByName($this->authenticatedRole, TRUE);
+			$this->guestRole = $this->roleRepository->getByName(self::ROLE_GUEST, TRUE);
+			$this->authenticatedRole = $this->roleRepository->getByName(self::ROLE_AUTHENTICATED, TRUE);
 		}
 		catch (Doctrine\DBAL\Exception\TableNotFoundException $e) {
-			$this->guestRole = new Entity\Role\Role($this->guestRole);
-			$this->authenticatedRole = new Entity\Role\Role($this->authenticatedRole);
+			$this->guestRole = new Entity\Role\Role(self::ROLE_GUEST);
+			$this->authenticatedRole = new Entity\Role\Role(self::ROLE_AUTHENTICATED);
 		}
 
 		if ($this->isLoggedIn() && is_null($this->getIdentity())) {
