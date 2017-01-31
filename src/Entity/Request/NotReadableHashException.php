@@ -2,7 +2,9 @@
 
 namespace Trejjam\Acl\Entity\Request;
 
-class NotReadableHashException extends \LogicException
+use Trejjam\Acl;
+
+class NotReadableHashException extends Acl\LogicException
 {
 
 }

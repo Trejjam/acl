@@ -20,10 +20,12 @@ class UserRepository
 
 	public function __construct(
 		$userClassName,
-		EntityManager $em
+		EntityManager $em,
+		UserService $userService
 	) {
 		$this->userClassName = $userClassName;
 		$this->em = $em;
+		$this->userService = $userService;
 	}
 
 	/**
@@ -31,6 +33,7 @@ class UserRepository
 	 *
 	 * @return User
 	 * @throws UserNotFoundException
+	 * @throws Doctrine\ORM\NonUniqueResultException
 	 */
 	public function getById($userId)
 	{
@@ -53,6 +56,7 @@ class UserRepository
 	 *
 	 * @return User
 	 * @throws UserNotFoundException
+	 * @throws Doctrine\ORM\NonUniqueResultException
 	 */
 	public function getByUsername($username, $fetchType = NULL)
 	{
@@ -61,7 +65,6 @@ class UserRepository
 							  ->select('user')
 							  ->from($this->userClassName, 'user')
 							  ->andWhere('user.username = :username')->setParameter('username', $username)
-
 							  ->getQuery();
 
 			if ( !is_null($fetchType)) {
@@ -75,6 +78,13 @@ class UserRepository
 		}
 	}
 
+	/**
+	 * @param string $activated
+	 *
+	 * @return mixed
+	 * @throws Doctrine\ORM\NoResultException
+	 * @throws Doctrine\ORM\NonUniqueResultException
+	 */
 	public function getCountActivated($activated = StatusActivated::STATE_ACTIVATED)
 	{
 		if ( !in_array($activated, StatusActivated::getValues())) {
@@ -126,5 +136,63 @@ class UserRepository
 		$this->em->merge($user);
 
 		return $this;
+	}
+
+	// ------------- write -----------------
+
+	/**
+	 * @param string      $username
+	 * @param string|null $password
+	 *
+	 * @return User
+	 * @throws \Exception
+	 */
+	public function createUser($username, $password = NULL)
+	{
+		try {
+			$user = $this->getByUsername($username);
+
+			throw new UserAlreadyExistException($user);
+		}
+		catch (UserNotFoundException $e) {
+
+		}
+
+		$user = $this->userService->createUser($username);
+
+		if ( !is_null($password)) {
+			$user->hashPassword($password);
+		}
+
+		$this->em->persist($user);
+		$this->em->flush();
+
+		return $user;
+	}
+
+	public function updateUser(User $user)
+	{
+		$this->em->beginTransaction();
+
+		try {
+			$user->flush($this->em);
+			$this->em->flush($user);
+
+			$this->em->commit();
+		}
+		catch (\Exception $e) {
+			$this->em->rollback();
+
+			throw $e;
+		}
+
+		return $user;
+	}
+
+	public function changePassword(User $user, $password)
+	{
+		$user->hashPassword($password);
+
+		$this->updateUser($user);
 	}
 }

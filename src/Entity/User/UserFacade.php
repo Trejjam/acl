@@ -6,6 +6,13 @@ use Nette;
 use Kdyby\Doctrine\EntityManager;
 use Trejjam;
 
+/**
+ * Class UserFacade
+ *
+ * @package Trejjam\Acl\Entity\User
+ *
+ * @deprecated use UserRepository instead
+ */
 class UserFacade
 {
 	/**
@@ -13,19 +20,21 @@ class UserFacade
 	 */
 	private $em;
 	/**
-	 * @var UserService
+	 * @var UserRepository
 	 */
-	private $userService;
+	private $userRepository;
 
 	public function __construct(
 		EntityManager $em,
-		UserService $userService
+		UserRepository $userRepository
 	) {
 		$this->em = $em;
-		$this->userService = $userService;
+		$this->userRepository = $userRepository;
 	}
 
 	/**
+	 * @deprecated use UserRepository::createUser
+	 *
 	 * @param string      $username
 	 * @param string|null $password
 	 *
@@ -34,41 +43,30 @@ class UserFacade
 	 */
 	public function createUser($username, $password = NULL)
 	{
-		$user = $this->userService->createUser($username);
-
-		if ( !is_null($password)) {
-			$user->hashPassword($password);
-		}
-
-		$this->em->persist($user);
-		$this->em->flush();
-
-		return $user;
+		return $this->userRepository->createUser($username, $password);
 	}
 
+	/**
+	 * @deprecated use UserRepository::updateUser
+	 *
+	 * @param User $user
+	 *
+	 * @return User
+	 * @throws \Exception
+	 */
 	public function updateUser(User $user)
 	{
-		$this->em->beginTransaction();
-
-		try {
-			$user->flush($this->em);
-			$this->em->flush($user);
-
-			$this->em->commit();
-		}
-		catch (\Exception $e) {
-			$this->em->rollback();
-
-			throw $e;
-		}
-
-		return $user;
+		return $this->userRepository->updateUser($user);
 	}
 
+	/**
+	 * @deprecated use UserRepository::changePassword
+	 *
+	 * @param User $user
+	 * @param      $password
+	 */
 	public function changePassword(User $user, $password)
 	{
-		$user->hashPassword($password);
-
-		$this->updateUser($user);
+		$this->userRepository->changePassword($user, $password);
 	}
 }

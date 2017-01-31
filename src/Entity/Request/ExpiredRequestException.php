@@ -2,7 +2,9 @@
 
 namespace Trejjam\Acl\Entity\Request;
 
-class ExpiredRequestException extends \LogicException implements InvalidRequestException
+use Trejjam\Acl;
+
+class ExpiredRequestException extends Acl\LogicException implements InvalidRequestException
 {
 
 }

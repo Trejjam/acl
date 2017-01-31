@@ -6,7 +6,7 @@ use Nette;
 use Doctrine;
 use Kdyby;
 use Doctrine\ORM\Mapping as ORM;
-use Trejjam;
+use Trejjam\Acl;
 use Trejjam\Acl\Entity;
 
 /**
@@ -85,7 +85,7 @@ class Role
 	 * @param bool $unlinkParent
 	 *
 	 * @return $this
-	 * @throws \LogicException
+	 * @throws Acl\LogicException
 	 */
 	public function fetchChild($unlinkParent = FALSE)
 	{
@@ -101,7 +101,7 @@ class Role
 			}
 		}
 		else {
-			throw new \LogicException('Child are already fetched');
+			throw new Acl\LogicException('Child are already fetched');
 		}
 
 		if ($this->resources instanceof Doctrine\ORM\PersistentCollection || $this->resources instanceof Doctrine\Common\Collections\ArrayCollection) {

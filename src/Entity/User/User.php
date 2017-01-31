@@ -7,7 +7,7 @@ use Doctrine;
 use Kdyby;
 use Doctrine\ORM\Mapping as ORM;
 use Kdyby\Doctrine\EntityManager;
-use Trejjam;
+use Trejjam\Acl;
 use Trejjam\Acl\Entity;
 
 /**
@@ -139,7 +139,7 @@ abstract class User implements Nette\Security\IIdentity
 	/**
 	 * Returns a list of roles that the user is a member of.
 	 *
-	 * @return Trejjam\Authorization\Acl\Role[]|Doctrine\Common\Collections\ArrayCollection
+	 * @return Entity\Role\Role[]|Doctrine\Common\Collections\ArrayCollection
 	 */
 	public function getRoles()
 	{
@@ -161,7 +161,7 @@ abstract class User implements Nette\Security\IIdentity
 			}
 		}
 		else {
-			throw new \LogicException('Roles are already fetched');
+			throw new Acl\LogicException('Roles are already fetched');
 		}
 
 		return $this;
