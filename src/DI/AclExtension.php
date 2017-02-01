@@ -14,7 +14,6 @@ class AclExtension extends Trejjam\BaseExtension\DI\BaseExtension implements IEn
 		'createMissingResource' => TRUE,
 		'user'                  => [
 			'className' => NULL,
-			'autoFetch' => TRUE,
 		],
 		'request'               => [
 			'typeClass' => Trejjam\Acl\Entity\Request\RequestType::class,
@@ -78,12 +77,7 @@ class AclExtension extends Trejjam\BaseExtension\DI\BaseExtension implements IEn
 
 		$containerBuilder = $this->getContainerBuilder();
 		$containerBuilder->getDefinition('security.userStorage')
-						 ->setFactory(Trejjam\Acl\UserStorage::class)
-						 ->setArguments(
-							 [
-								 'autoFetchUser' => $config['user']['autoFetch'],
-							 ]
-						 );
+						 ->setFactory(Trejjam\Acl\UserStorage::class);
 
 		$containerBuilder->getDefinition('security.user')
 						 ->setClass(Trejjam\Acl\User::class);

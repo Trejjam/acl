@@ -59,8 +59,6 @@ class Authenticator implements Nette\Security\IAuthenticator
 			$this->userFacade->changePassword($user, $password);
 		}
 
-		$user->fetchRoles();
-
 		return $user;
 	}
 }

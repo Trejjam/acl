@@ -24,17 +24,33 @@ class UserStorage extends Nette\Http\UserStorage
 	 * UserStorage constructor.
 	 *
 	 * @param Nette\Http\Session         $sessionHandler
-	 * @param                            $autoFetchUser
 	 * @param Entity\User\UserRepository $userRepository
 	 */
 	public function __construct(
 		Nette\Http\Session $sessionHandler,
-		$autoFetchUser,
 		Trejjam\Acl\Entity\User\UserRepository $userRepository
 	) {
 		parent::__construct($sessionHandler);
-		$this->autoFetchUser = $autoFetchUser;
 		$this->userRepository = $userRepository;
+	}
+
+	/**
+	 * Sets the user identity.
+	 *
+	 * @param Nette\Security\IIdentity $identity
+	 *
+	 * @return static
+	 */
+	public function setIdentity(Nette\Security\IIdentity $identity = NULL)
+	{
+		if ( !is_null($identity)) {
+			$this->identity = $identity;
+			$identity = new SessionUserObject($identity->getId());
+		}
+
+		$this->getSessionSection(TRUE)->identity = $identity;
+
+		return $this;
 	}
 
 	/**
@@ -47,15 +63,18 @@ class UserStorage extends Nette\Http\UserStorage
 
 		$identity = NULL;
 
-		if ( !$this->autoFetchUser) {
-			$identity = $session->identity;
-		}
-		else if ($this->identity) {
+		if ($this->identity) {
 			$identity = $this->identity;
 		}
 		else if ($session && !is_null($session->identity)) {
-			$this->userRepository->mergeCached($session->identity);
 			$identity = $this->identity = $session->identity;
+		}
+
+		if (
+			!is_null($identity)
+			&& !($identity instanceof Trejjam\Acl\Entity\User\User)
+		) {
+			$identity = $this->identity = $this->userRepository->getById($identity->getId());
 		}
 
 		return $identity;

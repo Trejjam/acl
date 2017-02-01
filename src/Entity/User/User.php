@@ -138,20 +138,4 @@ abstract class User implements Nette\Security\IIdentity
 	{
 		return $this->roles;
 	}
-
-	public function fetchRoles()
-	{
-		if ($this->roles instanceof Doctrine\ORM\PersistentCollection || $this->roles instanceof Doctrine\Common\Collections\ArrayCollection) {
-			$this->roles = $this->roles->getValues();
-
-			foreach ($this->roles as $role) {
-				$role->fetchChild(TRUE);
-			}
-		}
-		else {
-			throw new Acl\LogicException('Roles are already fetched');
-		}
-
-		return $this;
-	}
 }
