@@ -4,10 +4,11 @@ namespace Trejjam\Acl\DI;
 
 use Kdyby\Doctrine\DI\IEntityProvider;
 use Kdyby\Doctrine\DI\IDatabaseTypeProvider;
+use Kdyby\Doctrine\DI\ITargetEntityProvider;
 use Nette;
 use Trejjam;
 
-class AclExtension extends Trejjam\BaseExtension\DI\BaseExtension implements IEntityProvider, IDatabaseTypeProvider
+class AclExtension extends Trejjam\BaseExtension\DI\BaseExtension implements IEntityProvider, IDatabaseTypeProvider, ITargetEntityProvider
 {
 	protected $default = [
 		'createMissingResource' => TRUE,
@@ -39,8 +40,8 @@ class AclExtension extends Trejjam\BaseExtension\DI\BaseExtension implements IEn
 		'role.facade'     => Trejjam\Acl\Entity\Role\RoleFacade::class,
 		'role.cache'      => Nette\Caching\Cache::class,
 
-		'authenticator'   => Trejjam\Acl\Authenticator::class,
-		'authorizator'    => Trejjam\Acl\Authorizator::class,
+		'authenticator' => Trejjam\Acl\Authenticator::class,
+		'authorizator'  => Trejjam\Acl\Authorizator::class,
 	];
 
 	public function loadConfiguration()
@@ -116,6 +117,21 @@ class AclExtension extends Trejjam\BaseExtension\DI\BaseExtension implements IEn
 			'permissionEnum'     => Trejjam\Acl\Entity\Resource\PermissionType::class,
 			'userRequestType'    => $config['request']['typeClass'],
 			'identityHashStatus' => Trejjam\Acl\Entity\IdentityHash\IdentityHashStatus::class,
+		];
+	}
+
+	/**
+	 * Returns associative array of Interface => Class definition
+	 *
+	 * @return array
+	 * @throws Nette\Utils\AssertionException
+	 */
+	public function getTargetEntityMappings()
+	{
+		$config = $this->createConfig();
+
+		return [
+			Trejjam\Acl\Entity\User\User::class => $config['user']['className'],
 		];
 	}
 }

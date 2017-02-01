@@ -9,26 +9,20 @@ use Trejjam;
 /**
  * Class UserFacade
  *
- * @package Trejjam\Acl\Entity\User
+ * @package    Trejjam\Acl\Entity\User
  *
  * @deprecated use UserRepository instead
  */
 class UserFacade
 {
 	/**
-	 * @var EntityManager
-	 */
-	private $em;
-	/**
 	 * @var UserRepository
 	 */
 	private $userRepository;
 
 	public function __construct(
-		EntityManager $em,
 		UserRepository $userRepository
 	) {
-		$this->em = $em;
 		$this->userRepository = $userRepository;
 	}
 

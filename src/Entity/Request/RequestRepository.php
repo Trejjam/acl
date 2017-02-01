@@ -12,11 +12,17 @@ class RequestRepository
 	 * @var EntityManager
 	 */
 	private $em;
+	/**
+	 * @var RequestService
+	 */
+	private $requestService;
 
 	public function __construct(
-		EntityManager $em
+		EntityManager $em,
+		RequestService $requestService
 	) {
 		$this->em = $em;
+		$this->requestService = $requestService;
 	}
 
 	/**
@@ -38,5 +44,33 @@ class RequestRepository
 		catch (Doctrine\ORM\NoResultException $e) {
 			throw new RequestNotFoundException($id, $e);
 		}
+	}
+
+	public function createRequest(Trejjam\Acl\Entity\User\User $user, $type, $extraValue = NULL, $timeout = NULL, $hashLength = Request::HASH_LENGTH)
+	{
+		$request = $this->requestService->createRequest($user, $type, $extraValue, $timeout, $hashLength);
+
+		$this->em->persist($request);
+		$this->em->flush();
+
+		return $request;
+	}
+
+	public function updateRequest(Request $request)
+	{
+		$this->em->beginTransaction();
+
+		try {
+			$this->em->flush($request);
+
+			$this->em->commit();
+		}
+		catch (\Exception $e) {
+			$this->em->rollback();
+
+			throw $e;
+		}
+
+		return $request;
 	}
 }

@@ -80,14 +80,6 @@ class Request
 	}
 
 	/**
-	 * @return int
-	 */
-	public function getId()
-	{
-		return $this->id;
-	}
-
-	/**
 	 * @return string
 	 *
 	 * @throws NotReadableHashException
@@ -102,15 +94,15 @@ class Request
 	}
 
 	/**
-	 * @param Entity\User\User $user
-	 * @param string           $hash
-	 * @param bool             $enableUsed
+	 * @param Entity\User\User|null $user
+	 * @param string                $hash
+	 * @param bool                  $enableUsed
 	 *
 	 * @return bool
 	 * @throws InvalidRequestException|AlreadyUsedRequestException
 	 * @throws InvalidRequestException|ExpiredRequestException
 	 */
-	public function validateHash(Entity\User\User $user, $hash, $enableUsed = FALSE)
+	public function validateHash(Entity\User\User $user = NULL, $hash, $enableUsed = FALSE)
 	{
 		if ( !$enableUsed && $this->isUsed) {
 			throw new AlreadyUsedRequestException;
@@ -120,7 +112,11 @@ class Request
 			throw new ExpiredRequestException;
 		}
 
-		return $user === $this->user && Nette\Security\Passwords::verify($hash, $this->hash);
+		if ( !is_null($user) && $user !== $this->user) {
+			return FALSE;
+		}
+
+		return Nette\Security\Passwords::verify($hash, $this->hash);
 	}
 
 	/**
@@ -147,5 +143,13 @@ class Request
 	public function getExtraValue()
 	{
 		return $this->extraValue;
+	}
+
+	/**
+	 * @return Entity\User\User
+	 */
+	public function getUser()
+	{
+		return $this->user;
 	}
 }

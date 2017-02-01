@@ -2,7 +2,9 @@
 
 namespace Trejjam\Acl\Entity\User;
 
-class UserAlreadyExistException extends \LogicException
+use Trejjam\Acl;
+
+class UserAlreadyExistException extends Acl\LogicException
 {
 	/**
 	 * @var User

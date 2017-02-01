@@ -12,11 +12,11 @@ class UserRepository
 	/**
 	 * @var string
 	 */
-	private $userClassName;
+	protected $userClassName;
 	/**
 	 * @var EntityManager
 	 */
-	private $em;
+	protected $em;
 
 	public function __construct(
 		$userClassName,
@@ -26,6 +26,14 @@ class UserRepository
 		$this->userClassName = $userClassName;
 		$this->em = $em;
 		$this->userService = $userService;
+	}
+
+	/**
+	 * @return EntityManager
+	 */
+	public function getEntityManager()
+	{
+		return $this->em;
 	}
 
 	/**
@@ -155,7 +163,7 @@ class UserRepository
 			throw new UserAlreadyExistException($user);
 		}
 		catch (UserNotFoundException $e) {
-
+			//this is correct behavior
 		}
 
 		$user = $this->userService->createUser($username);
@@ -175,7 +183,6 @@ class UserRepository
 		$this->em->beginTransaction();
 
 		try {
-			$user->flush($this->em);
 			$this->em->flush($user);
 
 			$this->em->commit();
@@ -194,5 +201,7 @@ class UserRepository
 		$user->hashPassword($password);
 
 		$this->updateUser($user);
+
+		return $user;
 	}
 }

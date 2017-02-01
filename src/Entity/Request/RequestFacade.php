@@ -6,25 +6,31 @@ use Nette;
 use Kdyby\Doctrine\EntityManager;
 use Trejjam;
 
+/**
+ * Class RequestFacade
+ *
+ * @package Trejjam\Acl\Entity\Request
+ *
+ * @deprecated use RequestRepository instead
+ */
 class RequestFacade
 {
 	/**
-	 * @var EntityManager
+	 * @var RequestRepository
 	 */
-	private $em;
+	private $requestRepository;
+
+
 	/**
-	 * @var RequestService
+	 * RequestFacade constructor.
+	 *
+	 * @param RequestRepository $requestRepository
 	 */
-	private $requestService;
-
 	public function __construct(
-		EntityManager $em,
-		RequestService $requestService
+		RequestRepository $requestRepository
 	) {
-		$this->em = $em;
-		$this->requestService = $requestService;
+		$this->requestRepository = $requestRepository;
 	}
-
 
 	/**
 	 * @param Trejjam\Acl\Entity\User\User $user
@@ -36,32 +42,24 @@ class RequestFacade
 	 * @return Request
 	 * @throws \Exception
 	 *
+	 * @deprecated use RequestRepository::createRequest
+	 *
 	 */
 	public function createRequest(Trejjam\Acl\Entity\User\User $user, $type, $extraValue = NULL, $timeout = NULL, $hashLength = Request::HASH_LENGTH)
 	{
-		$request = $this->requestService->createRequest($user, $type, $extraValue, $timeout, $hashLength);
-
-		$this->em->persist($request);
-		$this->em->flush();
-
-		return $request;
+		return $this->requestRepository->createRequest($user, $type, $extraValue, $timeout, $hashLength);
 	}
 
+	/**
+	 * @param Request $request
+	 *
+	 * @return Request
+	 * @throws \Exception
+	 *
+	 * @deprecated use RequestRepository::updateRequest
+	 */
 	public function updateRequest(Request $request)
 	{
-		$this->em->beginTransaction();
-
-		try {
-			$this->em->flush($request);
-
-			$this->em->commit();
-		}
-		catch (\Exception $e) {
-			$this->em->rollback();
-
-			throw $e;
-		}
-
-		return $request;
+		return $this->requestRepository->updateRequest($request);
 	}
 }

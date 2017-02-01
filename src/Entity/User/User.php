@@ -12,17 +12,10 @@ use Trejjam\Acl\Entity;
 
 /**
  * @ORM\MappedSuperclass
- * @ORM\Table(name="`users__users`")
  */
 abstract class User implements Nette\Security\IIdentity
 {
-	/**
-	 * @ORM\Id()
-	 * @ORM\Column(type="integer")
-	 * @ORM\GeneratedValue
-	 * @var integer
-	 */
-	protected $id;
+	use Kdyby\Doctrine\Entities\Attributes\Identifier;
 
 	/**
 	 * @var string
@@ -69,7 +62,7 @@ abstract class User implements Nette\Security\IIdentity
 	 */
 	protected $roles;
 
-	public function __construct($username = NULL)
+	public function __construct($username)
 	{
 		$this->username = $username;
 		$this->status = StatusType::STATE_ENABLE;
@@ -144,11 +137,6 @@ abstract class User implements Nette\Security\IIdentity
 	public function getRoles()
 	{
 		return $this->roles;
-	}
-
-	public function flush(EntityManager $entityManager)
-	{
-
 	}
 
 	public function fetchRoles()
