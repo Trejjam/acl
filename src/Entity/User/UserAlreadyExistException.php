@@ -21,7 +21,7 @@ class UserAlreadyExistException extends Acl\LogicException
 	/**
 	 * @return User
 	 */
-	public function getUser(): User
+	public function getUser()
 	{
 		return $this->user;
 	}
