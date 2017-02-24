@@ -100,6 +100,14 @@ abstract class User implements Nette\Security\IIdentity
 	/**
 	 * @return string
 	 */
+	public function getActivated()
+	{
+		return $this->activated;
+	}
+
+	/**
+	 * @return string
+	 */
 	public function getPassword()
 	{
 		return $this->password;

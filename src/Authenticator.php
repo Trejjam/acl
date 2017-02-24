@@ -14,23 +14,16 @@ class Authenticator implements Nette\Security\IAuthenticator
 	 * @var Entity\User\UserRepository
 	 */
 	private $userRepository;
-	/**
-	 * @var Entity\User\UserFacade
-	 */
-	private $userFacade;
 
 	/**
 	 * Authenticator constructor.
 	 *
 	 * @param Entity\User\UserRepository $userRepository
-	 * @param Entity\User\UserFacade     $userFacade
 	 */
 	function __construct(
-		Trejjam\Acl\Entity\User\UserRepository $userRepository,
-		Trejjam\Acl\Entity\User\UserFacade $userFacade
+		Trejjam\Acl\Entity\User\UserRepository $userRepository
 	) {
 		$this->userRepository = $userRepository;
-		$this->userFacade = $userFacade;
 	}
 
 	/**
@@ -40,8 +33,11 @@ class Authenticator implements Nette\Security\IAuthenticator
 	 * @param array $credentials
 	 *
 	 * @return IIdentity|Entity\User\User
-	 * @throws \Doctrine\ORM\NonUniqueResultException
-	 * @throws AuthenticationException
+	 * @throws Entity\User\UserNotFoundException
+	 * @throws Entity\User\NotDefinedPasswordException
+	 * @throws Entity\User\InvalidCredentialsException
+	 * @throws Entity\User\NotEnabledUserException
+	 * @throws Entity\User\NotActivatedUserException
 	 */
 	function authenticate(array $credentials)
 	{
@@ -50,13 +46,19 @@ class Authenticator implements Nette\Security\IAuthenticator
 		$user = $this->userRepository->getByUsername($username, Doctrine\ORM\Mapping\ClassMetadata::FETCH_EAGER);
 
 		if (is_null($user->getPassword())) {
-			throw new Trejjam\Acl\Entity\User\NotDefinedPasswordException($username);
+			throw new Entity\User\NotDefinedPasswordException($username);
 		}
 		else if ( !Nette\Security\Passwords::verify($password, $user->getPassword())) {
-			throw new Trejjam\Acl\Entity\User\InvalidCredentialsException($username);
+			throw new Entity\User\InvalidCredentialsException($username);
+		}
+		else if ($user->getStatus() !== Entity\User\StatusType::STATE_ENABLE) {
+			throw new Entity\User\NotEnabledUserException($username);
+		}
+		else if ($user->getActivated() !== Entity\User\StatusActivated::STATE_ACTIVATED) {
+			throw new Entity\User\NotActivatedUserException($username);
 		}
 		else if (Nette\Security\Passwords::needsRehash($user->getPassword())) {
-			$this->userFacade->changePassword($user, $password);
+			$this->userRepository->changePassword($user, $password);
 		}
 
 		return $user;

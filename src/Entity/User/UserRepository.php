@@ -64,7 +64,6 @@ class UserRepository
 	 *
 	 * @return User
 	 * @throws UserNotFoundException
-	 * @throws Doctrine\ORM\NonUniqueResultException
 	 */
 	public function getByUsername($username, $fetchType = NULL)
 	{
@@ -73,6 +72,7 @@ class UserRepository
 							  ->select('user')
 							  ->from($this->userClassName, 'user')
 							  ->andWhere('user.username = :username')->setParameter('username', $username)
+							  ->setMaxResults(1)
 							  ->getQuery();
 
 			if ( !is_null($fetchType)) {
@@ -89,9 +89,9 @@ class UserRepository
 	/**
 	 * @param string $activated
 	 *
-	 * @return mixed
+	 * @return int
 	 * @throws Doctrine\ORM\NoResultException
-	 * @throws Doctrine\ORM\NonUniqueResultException
+	 * @throws Trejjam\Acl\InvalidArgumentException
 	 */
 	public function getCountActivated($activated = StatusActivated::STATE_ACTIVATED)
 	{
@@ -137,13 +137,6 @@ class UserRepository
 		catch (Doctrine\ORM\NoResultException $e) {
 			return [];
 		}
-	}
-
-	public function mergeCached(User $user)
-	{
-		$this->em->merge($user);
-
-		return $this;
 	}
 
 	// ------------- write -----------------
