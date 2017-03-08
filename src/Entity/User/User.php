@@ -20,14 +20,14 @@ abstract class User implements Nette\Security\IIdentity
 	/**
 	 * @var string
 	 *
-	 * @ORM\Column(type="statusEnum", options={"default":StatusType::STATE_ENABLE})
+	 * @ORM\Column(type="statusEnum")
 	 */
 	protected $status;
 
 	/**
-	 * @var string
+	 * @var bool
 	 *
-	 * @ORM\Column(type="statusActivated", options={"default":StatusActivated::STATE_INACTIVE})
+	 * @ORM\Column(type="statusActivated")
 	 */
 	protected $activated;
 
@@ -66,7 +66,7 @@ abstract class User implements Nette\Security\IIdentity
 	{
 		$this->username = $username;
 		$this->status = StatusType::STATE_ENABLE;
-		$this->activated = StatusActivated::STATE_INACTIVE;
+		$this->activated = FALSE;
 		$this->roles = new Doctrine\Common\Collections\ArrayCollection;
 		$this->createdDate = new Nette\Utils\DateTime;
 	}
@@ -98,9 +98,9 @@ abstract class User implements Nette\Security\IIdentity
 	}
 
 	/**
-	 * @return string
+	 * @return bool
 	 */
-	public function getActivated()
+	public function isActivated()
 	{
 		return $this->activated;
 	}
@@ -126,13 +126,13 @@ abstract class User implements Nette\Security\IIdentity
 	}
 
 	/**
-	 * @param string $activated
+	 * @param bool $activated
 	 *
 	 * @return $this
 	 */
-	public function setActivated($activated = StatusActivated::STATE_ACTIVATED)
+	public function setActivated($activated = TRUE)
 	{
-		$this->activated = $activated;
+		$this->activated = (bool)$activated;
 
 		return $this;
 	}

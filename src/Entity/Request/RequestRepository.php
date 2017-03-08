@@ -29,7 +29,7 @@ class RequestRepository
 	 * @param $id
 	 *
 	 * @return Request
-	 * @throws Doctrine\ORM\NonUniqueResultException
+	 * @throws RequestNotFoundException
 	 */
 	public function getById($id)
 	{
@@ -45,6 +45,9 @@ class RequestRepository
 			throw new RequestNotFoundException($id, $e);
 		}
 	}
+
+	// =============================================================================
+	// write
 
 	public function createRequest(Trejjam\Acl\Entity\User\User $user, $type, $extraValue = NULL, $timeout = NULL, $hashLength = Request::HASH_LENGTH)
 	{

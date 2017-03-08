@@ -19,4 +19,14 @@ class StatusActivated extends Entity\Enum
 			self::STATE_INACTIVE,
 		];
 	}
+
+	public function convertToDatabaseValue($value, Doctrine\DBAL\Platforms\AbstractPlatform $platform)
+	{
+		return $value ? static::STATE_ACTIVATED : static::STATE_INACTIVE;
+	}
+
+	public function convertToPHPValue($value, Doctrine\DBAL\Platforms\AbstractPlatform $platform)
+	{
+		return $value === static::STATE_ACTIVATED;
+	}
 }

@@ -57,6 +57,22 @@ class Role
 		$this->resources = new Doctrine\Common\Collections\ArrayCollection;
 	}
 
+	/**
+	 * @return string
+	 */
+	public function getName()
+	{
+		return $this->name;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getInfo()
+	{
+		return $this->info;
+	}
+
 	protected function setParent(Role $role = NULL)
 	{
 		$this->parent = $role;

@@ -30,7 +30,7 @@ class RoleRepository
 	 * @param $id
 	 *
 	 * @return Role
-	 * @throws Doctrine\ORM\NonUniqueResultException
+	 * @throws RoleNotFoundException
 	 */
 	public function getById($id)
 	{
@@ -52,7 +52,7 @@ class RoleRepository
 	 * @param bool   $useCache
 	 *
 	 * @return Role
-	 * @throws Doctrine\ORM\NonUniqueResultException
+	 * @throws RoleNotFoundException
 	 */
 	public function getByName($name, $useCache = FALSE)
 	{
