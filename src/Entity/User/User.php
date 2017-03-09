@@ -53,7 +53,8 @@ abstract class User implements Nette\Security\IIdentity
 	protected $createdDate;
 
 	/**
-	 * @var Entity\Role\Role[]|Doctrine\ORM\PersistentCollection|Doctrine\Common\Collections\ArrayCollection
+	 * @var Entity\Role\Role[]|Doctrine\Common\Collections\Collection|Doctrine\Common\Collections\Selectable
+	 *
 	 * @ORM\ManyToMany(targetEntity=Entity\Role\Role::class)
 	 * @ORM\JoinTable(name="users__user_role",
 	 *        joinColumns={@ORM\JoinColumn(name="user_id", referencedColumnName="id")},
@@ -62,13 +63,22 @@ abstract class User implements Nette\Security\IIdentity
 	 */
 	protected $roles;
 
+	/**
+	 * @var Entity\IdentityHash\IdentityHash[]|Doctrine\Common\Collections\Collection|Doctrine\Common\Collections\Selectable
+	 *
+	 * @ORM\OneToMany(targetEntity=Entity\IdentityHash\IdentityHash::class, mappedBy="user")
+	 */
+	protected $identityHash;
+
 	public function __construct($username)
 	{
-		$this->username = $username;
+		$this->createdDate = new \DateTime;
 		$this->status = StatusType::STATE_ENABLE;
 		$this->activated = FALSE;
 		$this->roles = new Doctrine\Common\Collections\ArrayCollection;
-		$this->createdDate = new Nette\Utils\DateTime;
+		$this->identityHash = new Doctrine\Common\Collections\ArrayCollection;
+
+		$this->setUsername($username);
 	}
 
 	/**
@@ -140,10 +150,30 @@ abstract class User implements Nette\Security\IIdentity
 	/**
 	 * Returns a list of roles that the user is a member of.
 	 *
-	 * @return Entity\Role\Role[]|Doctrine\Common\Collections\ArrayCollection
+	 * @return Entity\Role\Role[]|Doctrine\Common\Collections\Collection|Doctrine\Common\Collections\Selectable
 	 */
 	public function getRoles()
 	{
 		return $this->roles;
+	}
+
+	/**
+	 * @return Entity\IdentityHash\IdentityHash[]|Doctrine\Common\Collections\Collection|Doctrine\Common\Collections\Selectable
+	 */
+	public function getIdentityHash()
+	{
+		return $this->identityHash;
+	}
+
+	/**
+	 * @param string $username
+	 *
+	 * @return static
+	 */
+	public function setUsername($username)
+	{
+		$this->username = $username;
+
+		return $this;
 	}
 }

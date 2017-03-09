@@ -12,18 +12,24 @@ class IdentityHashRepository
 	 * @var EntityManager
 	 */
 	private $em;
+	/**
+	 * @var IdentityHashService
+	 */
+	private $identityHashService;
 
 	public function __construct(
-		EntityManager $em
+		EntityManager $em,
+		IdentityHashService $identityHashService
 	) {
 		$this->em = $em;
+		$this->identityHashService = $identityHashService;
 	}
 
 	/**
-	 * @param $id
+	 * @param int $id
 	 *
 	 * @return IdentityHash
-	 * @throws Doctrine\ORM\NonUniqueResultException
+	 * @throws IdentityHashNotFoundException
 	 */
 	public function getById($id)
 	{
@@ -41,10 +47,10 @@ class IdentityHashRepository
 	}
 
 	/**
-	 * @param $hash
+	 * @param string $hash
 	 *
 	 * @return IdentityHash
-	 * @throws Doctrine\ORM\NonUniqueResultException
+	 * @throws IdentityHashNotFoundException
 	 */
 	public function getByHash($hash)
 	{
@@ -59,5 +65,44 @@ class IdentityHashRepository
 		catch (Doctrine\ORM\NoResultException $e) {
 			throw new IdentityHashNotFoundException($hash, $e);
 		}
+	}
+
+	// =============================================================================
+	// write
+
+	/**
+	 * @param Trejjam\Acl\Entity\User\User $user
+	 * @param string                       $ip
+	 * @param int                          $hashLength
+	 *
+	 * @return IdentityHash
+	 * @throws \Exception
+	 */
+	public function createIdentityHash(Trejjam\Acl\Entity\User\User $user, $ip, $hashLength = IdentityHash::HASH_LENGTH)
+	{
+		$identityHash = $this->identityHashService->createIdentityHash($user, $ip, $hashLength);
+
+		$this->em->persist($identityHash);
+		$this->em->flush();
+
+		return $identityHash;
+	}
+
+	public function updateIdentityHash(IdentityHash $identityHash)
+	{
+		$this->em->beginTransaction();
+
+		try {
+			$this->em->flush($identityHash);
+
+			$this->em->commit();
+		}
+		catch (\Exception $e) {
+			$this->em->rollback();
+
+			throw $e;
+		}
+
+		return $identityHash;
 	}
 }

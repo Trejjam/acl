@@ -12,7 +12,7 @@ use Trejjam\Acl\Entity;
 /**
  * IdentityHash
  *
- * @ORM\Table(name="users__identity_hash", indexes={@ORM\Index(name="user_id", columns={"user_id"})})
+ * @ORM\Table(name="users__identity_hash")
  * @ORM\Entity
  */
 class IdentityHash
@@ -38,14 +38,14 @@ class IdentityHash
 	/**
 	 * @var string
 	 *
-	 * @ORM\Column(name="action", type="identityStatus", options={"default":IdentityHashStatus::STATE_NONE}, nullable=false)
+	 * @ORM\Column(name="action", type="identityHashStatus", nullable=false)
 	 */
 	private $action;
 
 	/**
 	 * @var Entity\User\User
 	 *
-	 * @ORM\ManyToOne(targetEntity=Entity\User\User::class)
+	 * @ORM\ManyToOne(targetEntity=Entity\User\User::class, inversedBy="identityHash")
 	 * @ORM\JoinColumns({
 	 *   @ORM\JoinColumn(name="user_id", referencedColumnName="id")
 	 * })

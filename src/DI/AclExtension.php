@@ -24,19 +24,15 @@ class AclExtension extends Trejjam\BaseExtension\DI\BaseExtension implements IEn
 	protected $classesDefinition = [
 		'user.service'    => Trejjam\Acl\Entity\User\UserService::class,
 		'user.repository' => Trejjam\Acl\Entity\User\UserRepository::class,
-		'user.facade'     => Trejjam\Acl\Entity\User\UserFacade::class,
 
 		'request.service'    => Trejjam\Acl\Entity\Request\RequestService::class,
 		'request.repository' => Trejjam\Acl\Entity\Request\RequestRepository::class,
-		'request.facade'     => Trejjam\Acl\Entity\Request\RequestFacade::class,
 
 		'identityHash.service'    => Trejjam\Acl\Entity\IdentityHash\IdentityHashService::class,
 		'identityHash.repository' => Trejjam\Acl\Entity\IdentityHash\IdentityHashRepository::class,
-		'identityHash.facade'     => Trejjam\Acl\Entity\IdentityHash\IdentityHashFacade::class,
 
 		'role.service'    => Trejjam\Acl\Entity\Role\RoleService::class,
 		'role.repository' => Trejjam\Acl\Entity\Role\RoleRepository::class,
-		'role.facade'     => Trejjam\Acl\Entity\Role\RoleFacade::class,
 		'role.cache'      => Nette\Caching\Cache::class,
 
 		'authenticator' => Trejjam\Acl\Authenticator::class,
