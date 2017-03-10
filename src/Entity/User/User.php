@@ -176,4 +176,18 @@ abstract class User implements Nette\Security\IIdentity
 
 		return $this;
 	}
+
+	public function addRole(Entity\Role\Role $role)
+	{
+		$this->roles->add($role);
+
+		return $this;
+	}
+
+	public function removeRole(Entity\Role\Role $role)
+	{
+		$this->roles->removeElement($role);
+
+		return $this;
+	}
 }

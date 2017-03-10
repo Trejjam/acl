@@ -84,6 +84,9 @@ class RoleRepository
 		}
 	}
 
+	/**
+	 * @return Role[]
+	 */
 	public function findRoot()
 	{
 		try {
@@ -95,7 +98,24 @@ class RoleRepository
 							->getResult();
 		}
 		catch (Doctrine\ORM\NoResultException $e) {
-			throw $e;
+			return [];
+		}
+	}
+
+	/**
+	 * @return Role[]
+	 */
+	public function findAll()
+	{
+		try {
+			return $this->em->createQueryBuilder()
+							->select('role')
+							->from(Role::class, 'role')
+							->getQuery()
+							->getResult();
+		}
+		catch (Doctrine\ORM\NoResultException $e) {
+			return [];
 		}
 	}
 

@@ -73,6 +73,23 @@ class Role
 		return $this->info;
 	}
 
+	/**
+	 * @return Role[]
+	 */
+	public function getChildren()
+	{
+		return $this->children;
+	}
+
+	public function getDepth()
+	{
+		if (is_null($this->parent)) {
+			return 0;
+		}
+
+		return 1 + $this->parent->getDepth();
+	}
+
 	protected function setParent(Role $role = NULL)
 	{
 		$this->parent = $role;
@@ -98,35 +115,11 @@ class Role
 	}
 
 	/**
-	 * @param bool $unlinkParent
+	 * @param $resource
+	 * @param $privilege
 	 *
-	 * @return $this
-	 * @throws Acl\LogicException
+	 * @return bool
 	 */
-	public function fetchChild($unlinkParent = FALSE)
-	{
-		if ($this->children instanceof Doctrine\ORM\PersistentCollection || $this->children instanceof Doctrine\Common\Collections\ArrayCollection) {
-			if ($unlinkParent && !is_null($this->parent)) {
-				$this->parent = TRUE;
-			}
-
-			$this->children = $this->children->getValues();
-
-			foreach ($this->children as $child) {
-				$child->fetchChild();
-			}
-		}
-		else {
-			throw new Acl\LogicException('Child are already fetched');
-		}
-
-		if ($this->resources instanceof Doctrine\ORM\PersistentCollection || $this->resources instanceof Doctrine\Common\Collections\ArrayCollection) {
-			$this->resources = $this->resources->getValues();
-		}
-
-		return $this;
-	}
-
 	public function isAllowed($resource, $privilege)
 	{
 		/** @var Entity\Resource\Resource $_resource */
@@ -149,5 +142,23 @@ class Role
 		}
 
 		return FALSE;
+	}
+
+	/**
+	 * @param Role[] $roles
+	 *
+	 * @return bool
+	 */
+	public function isChildOf(array $roles)
+	{
+		if (in_array($this, $roles, TRUE)) {
+			return TRUE;
+		}
+		else if (is_null($this->parent)) {
+			return FALSE;
+		}
+		else {
+			return $this->parent->isChildOf($roles);
+		}
 	}
 }

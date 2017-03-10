@@ -197,4 +197,31 @@ class UserRepository
 
 		return $user;
 	}
+
+	public function setActivated(User $user, $activated = TRUE)
+	{
+		$user->setActivated($activated);
+
+		$this->updateUser($user);
+
+		return $user;
+	}
+
+	public function addRole(User $user, Entity\Role\Role $role)
+	{
+		$user->addRole($role);
+
+		$this->updateUser($user);
+
+		return $user;
+	}
+
+	public function removeRole(User $user, Entity\Role\Role $role)
+	{
+		$user->removeRole($role);
+
+		$this->updateUser($user);
+
+		return $user;
+	}
 }
