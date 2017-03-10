@@ -54,7 +54,7 @@ class Authenticator implements Nette\Security\IAuthenticator
 		else if ($user->getStatus() !== Entity\User\StatusType::STATE_ENABLE) {
 			throw new Entity\User\NotEnabledUserException($username);
 		}
-		else if ($user->getActivated() !== Entity\User\StatusActivated::STATE_ACTIVATED) {
+		else if ( !$user->isActivated()) {
 			throw new Entity\User\NotActivatedUserException($username);
 		}
 		else if (Nette\Security\Passwords::needsRehash($user->getPassword())) {
