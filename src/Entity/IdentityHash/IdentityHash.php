@@ -19,7 +19,7 @@ class IdentityHash
 {
 	use Kdyby\Doctrine\Entities\Attributes\Identifier;
 
-	const HASH_LENGTH = 10;
+	const HASH_LENGTH = 30;
 
 	/**
 	 * @var string
@@ -94,6 +94,14 @@ class IdentityHash
 		$this->action = $action;
 
 		return $this;
+	}
+
+	/**
+	 * @return Entity\User\User
+	 */
+	public function getUser()
+	{
+		return $this->user;
 	}
 }
 

@@ -37,21 +37,26 @@ class UserRepository
 	}
 
 	/**
-	 * @param $userId
+	 * @param int         $userId
+	 * @param string|null $fetchType
 	 *
 	 * @return User
 	 * @throws UserNotFoundException
-	 * @throws Doctrine\ORM\NonUniqueResultException
 	 */
-	public function getById($userId)
+	public function getById($userId, $fetchType = NULL)
 	{
 		try {
-			return $this->em->createQueryBuilder()
-							->select('user')
-							->from($this->userClassName, 'user')
-							->andWhere('user.id = :id')->setParameter('id', $userId)
-							->getQuery()
-							->getSingleResult();
+			$query = $this->em->createQueryBuilder()
+							  ->select('user')
+							  ->from($this->userClassName, 'user')
+							  ->andWhere('user.id = :id')->setParameter('id', $userId)
+							  ->getQuery();
+
+			if ( !is_null($fetchType)) {
+				$query->setFetchMode($this->userClassName, 'roles', $fetchType);
+			}
+
+			return $query->getSingleResult();
 		}
 		catch (Doctrine\ORM\NoResultException $e) {
 			throw new UserNotFoundException($userId, $e);

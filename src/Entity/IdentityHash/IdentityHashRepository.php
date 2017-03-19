@@ -26,20 +26,27 @@ class IdentityHashRepository
 	}
 
 	/**
-	 * @param int $id
+	 * @param int         $id
+	 * @param string|null $fetchType
 	 *
 	 * @return IdentityHash
 	 * @throws IdentityHashNotFoundException
 	 */
-	public function getById($id)
+	public function getById($id, $fetchType = NULL)
 	{
 		try {
-			return $this->em->createQueryBuilder()
-							->select('identityHash')
-							->from(IdentityHash::class, 'identityHash')
-							->andWhere('identityHash.id = :id')->setParameter('id', $id)
-							->getQuery()
-							->getSingleResult();
+			$query = $this->em->createQueryBuilder()
+							  ->select('identityHash')
+							  ->from(IdentityHash::class, 'identityHash')
+							  ->andWhere('identityHash.id = :id')->setParameter('id', $id)
+							  ->getQuery();
+
+			if ( !is_null($fetchType)) {
+				$query->setFetchMode(IdentityHash::class, 'user', $fetchType);
+				$query->setFetchMode(Trejjam\Acl\Entity\User\User::class, 'roles', $fetchType);
+			}
+
+			return $query->getSingleResult();
 		}
 		catch (Doctrine\ORM\NoResultException $e) {
 			throw new IdentityHashNotFoundException($id, $e);
@@ -47,20 +54,27 @@ class IdentityHashRepository
 	}
 
 	/**
-	 * @param string $hash
+	 * @param string      $hash
+	 * @param string|null $fetchType
 	 *
 	 * @return IdentityHash
 	 * @throws IdentityHashNotFoundException
 	 */
-	public function getByHash($hash)
+	public function getByHash($hash, $fetchType = NULL)
 	{
 		try {
-			return $this->em->createQueryBuilder()
-							->select('identityHash')
-							->from(IdentityHash::class, 'identityHash')
-							->andWhere('identityHash.hash = :hash')->setParameter('hash', $hash)
-							->getQuery()
-							->getSingleResult();
+			$query = $this->em->createQueryBuilder()
+							  ->select('identityHash')
+							  ->from(IdentityHash::class, 'identityHash')
+							  ->andWhere('identityHash.hash = :hash')->setParameter('hash', $hash)
+							  ->getQuery();
+
+			if ( !is_null($fetchType)) {
+				$query->setFetchMode(IdentityHash::class, 'user', $fetchType);
+				$query->setFetchMode(Trejjam\Acl\Entity\User\User::class, 'roles', $fetchType);
+			}
+
+			return $query->getSingleResult();
 		}
 		catch (Doctrine\ORM\NoResultException $e) {
 			throw new IdentityHashNotFoundException($hash, $e);
@@ -72,13 +86,13 @@ class IdentityHashRepository
 
 	/**
 	 * @param Trejjam\Acl\Entity\User\User $user
-	 * @param string                       $ip
+	 * @param string|null                  $ip
 	 * @param int                          $hashLength
 	 *
 	 * @return IdentityHash
 	 * @throws \Exception
 	 */
-	public function createIdentityHash(Trejjam\Acl\Entity\User\User $user, $ip, $hashLength = IdentityHash::HASH_LENGTH)
+	public function createIdentityHash(Trejjam\Acl\Entity\User\User $user, $ip = NULL, $hashLength = IdentityHash::HASH_LENGTH)
 	{
 		$identityHash = $this->identityHashService->createIdentityHash($user, $ip, $hashLength);
 
@@ -102,6 +116,15 @@ class IdentityHashRepository
 
 			throw $e;
 		}
+
+		return $identityHash;
+	}
+
+	public function destroyIdentityHash(IdentityHash $identityHash)
+	{
+		$identityHash->setAction(IdentityHashStatus::STATE_DESTROYED);
+
+		$this->updateIdentityHash($identityHash);
 
 		return $identityHash;
 	}

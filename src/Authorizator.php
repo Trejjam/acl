@@ -11,11 +11,12 @@ class Authorizator implements Nette\Security\IAuthorizator
 	/**
 	 * Performs a role-based authorization.
 	 *
-	 * @param Trejjam\Acl\Entity\Role\Role                $role
-	 * @param Trejjam\Acl\Entity\Resource\Resource|string $resource
-	 * @param string                                      $privilege
+	 * @param Entity\Role\Role         $role
+	 * @param null|string|Entity\Resource\Resource $resource
+	 * @param null|string                          $privilege
 	 *
 	 * @return bool
+	 * @throws InvalidArgumentException
 	 */
 	function isAllowed($role, $resource = self::ALL, $privilege = self::ALL)
 	{
