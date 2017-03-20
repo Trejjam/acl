@@ -110,6 +110,10 @@ class User extends Nette\Security\User
 	public function isImpersonated()
 	{
 		$identityHash = $this->storage->getSessionIdentity();
+		if (is_null($identityHash)) {
+			return FALSE;
+		}
+
 		$previousIdentityHash = $identityHash->getPreviousSessionIdentity();
 
 		return !is_null($previousIdentityHash);
@@ -118,13 +122,18 @@ class User extends Nette\Security\User
 	public function stopImpersonate()
 	{
 		$sessionIdentityHash = $this->storage->getSessionIdentity();
-		$previousIdentityHash = $sessionIdentityHash->getPreviousSessionIdentity();
+		if (is_null($sessionIdentityHash)) {
+			$this->logout();
+		}
+		else {
+			$previousIdentityHash = $sessionIdentityHash->getPreviousSessionIdentity();
 
-		$this->storage->setAuthenticated(FALSE); //destroy identityHash
+			$this->storage->setAuthenticated(FALSE); //destroy identityHash
 
-		$this->storage->setSessionIdentityHash($previousIdentityHash);
-		$this->storage->setAuthenticated(TRUE);
-		$this->onLoggedIn($this);
+			$this->storage->setSessionIdentityHash($previousIdentityHash);
+			$this->storage->setAuthenticated(TRUE);
+			$this->onLoggedIn($this);
+		}
 	}
 
 	/**
