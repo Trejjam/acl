@@ -46,11 +46,16 @@ class UserRepository
 	public function getById($userId, $fetchType = NULL)
 	{
 		try {
-			$query = $this->em->createQueryBuilder()
-							  ->select('user')
-							  ->from($this->userClassName, 'user')
-							  ->andWhere('user.id = :id')->setParameter('id', $userId)
-							  ->getQuery();
+			$queryBuilder = $this->em->createQueryBuilder()
+									 ->select('user')
+									 ->from($this->userClassName, 'user')
+									 ->andWhere('user.id = :id')
+									 ->setParameter('id', $userId)
+									 ->setMaxResults(1);
+
+			$this->queryBuilderExtender($queryBuilder);
+
+			$query = $queryBuilder->getQuery();
 
 			if ( !is_null($fetchType)) {
 				$query->setFetchMode($this->userClassName, 'roles', $fetchType);
@@ -63,6 +68,7 @@ class UserRepository
 		}
 	}
 
+
 	/**
 	 * @param string      $username
 	 * @param string|null $fetchType
@@ -73,12 +79,15 @@ class UserRepository
 	public function getByUsername($username, $fetchType = NULL)
 	{
 		try {
-			$query = $this->em->createQueryBuilder()
-							  ->select('user')
-							  ->from($this->userClassName, 'user')
-							  ->andWhere('user.username = :username')->setParameter('username', $username)
-							  ->setMaxResults(1)
-							  ->getQuery();
+			$queryBuilder = $this->em->createQueryBuilder()
+									 ->select('user')
+									 ->from($this->userClassName, 'user')
+									 ->andWhere('user.username = :username')->setParameter('username', $username)
+									 ->setMaxResults(1);
+
+			$this->queryBuilderExtender($queryBuilder);
+
+			$query = $queryBuilder->getQuery();
 
 			if ( !is_null($fetchType)) {
 				$query->setFetchMode($this->userClassName, 'roles', $fetchType);
@@ -126,22 +135,29 @@ class UserRepository
 	public function findAll($showDisabled = TRUE)
 	{
 		try {
-			$query = $this->em->createQueryBuilder()
-							  ->select('user')
-							  ->from($this->userClassName, 'user');
+			$queryBuilder = $this->em->createQueryBuilder()
+									 ->select('user')
+									 ->from($this->userClassName, 'user');
 
 			if ($showDisabled === FALSE) {
-				$query->andWhere('user.status = :status')->setParameter('status', StatusType::STATE_ENABLE);
+				$queryBuilder->andWhere('user.status = :status')->setParameter('status', StatusType::STATE_ENABLE);
 			}
 
-			$query->orderBy('user.username');
+			$queryBuilder->orderBy('user.username');
 
-			return $query->getQuery()
-						 ->getResult();
+			$this->queryBuilderExtender($queryBuilder);
+
+			return $queryBuilder->getQuery()
+								->getResult();
 		}
 		catch (Doctrine\ORM\NoResultException $e) {
 			return [];
 		}
+	}
+
+	protected function queryBuilderExtender(Doctrine\ORM\QueryBuilder $queryBuilder)
+	{
+
 	}
 
 	// ------------- write -----------------
