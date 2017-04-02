@@ -10,7 +10,7 @@ use Trejjam;
 use Trejjam\Acl\Entity;
 
 /**
- * @ORM\Table(name="users__request", indexes={@ORM\Index(name="user_id", columns={"user_id"})})
+ * @ORM\Table(name="users__user_request", indexes={@ORM\Index(name="user_id", columns={"user_id"})})
  * @ORM\Entity()
  */
 class Request
