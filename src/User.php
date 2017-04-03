@@ -11,7 +11,7 @@ use Trejjam;
  *
  * @package Trejjam\Acl
  *
- * @method Doctrine\Common\Collections\Collection getRoles()
+ * @method Doctrine\Common\Collections\Collection|Entity\Role\Role[] getRoles()
  * @method Authenticator getAuthenticator($need = TRUE)
  *
  * @method onLoggedIn(User $user)

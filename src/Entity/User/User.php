@@ -166,6 +166,14 @@ abstract class User implements Nette\Security\IIdentity
 	}
 
 	/**
+	 * @return \DateTime
+	 */
+	public function getDateCreated()
+	{
+		return $this->createdDate;
+	}
+
+	/**
 	 * @param string $username
 	 *
 	 * @return static
