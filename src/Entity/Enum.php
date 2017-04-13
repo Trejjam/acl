@@ -23,14 +23,14 @@ abstract class Enum extends Kdyby\Doctrine\Types\Enum
 				', ',
 				array_map(function ($arr) {
 					return "'" . $arr . "'";
-				}, $this->getValues())
+				}, static::getValues())
 			), $this->getName()
 		);
 	}
 
 	public function convertToDatabaseValue($value, Doctrine\DBAL\Platforms\AbstractPlatform $platform)
 	{
-		if ( !in_array($value, $this->getValues())) {
+		if ( !in_array($value, static::getValues(), TRUE)) {
 			throw new InvalidStatusException("Invalid status");
 		}
 
