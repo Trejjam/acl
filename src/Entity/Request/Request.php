@@ -74,7 +74,7 @@ class Request
 		$this->user = $user;
 		$this->type = $type;
 		$this->extraValue = $extraValue;
-		$this->timeout = $timeout;
+		$this->timeout = $timeout === FALSE ? NULL : $timeout;
 		$this->readableHash = Nette\Utils\Random::generate($hashLength, '0-9A-Z');
 		$this->hash = Nette\Security\Passwords::hash($this->readableHash);
 	}
@@ -108,7 +108,7 @@ class Request
 			throw new AlreadyUsedRequestException;
 		}
 
-		if ($this->timeout < new Nette\Utils\DateTime) {
+		if ( !is_null($this->timeout) && $this->timeout < new Nette\Utils\DateTime) {
 			throw new ExpiredRequestException;
 		}
 
