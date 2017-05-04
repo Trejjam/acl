@@ -143,7 +143,12 @@ class UserStorage extends Nette\Http\UserStorage
 			$sessionIdentity = $this->getSessionIdentity($session);
 
 			if ( !is_null($sessionIdentity)) {
-				$identityHash = $this->identityHashRepository->getByHash($sessionIdentity->getIdentityHash(), Doctrine\ORM\Mapping\ClassMetadata::FETCH_EAGER);
+				try {
+					$identityHash = $this->identityHashRepository->getByHash($sessionIdentity->getIdentityHash(), Doctrine\ORM\Mapping\ClassMetadata::FETCH_EAGER);
+				}
+				catch (Trejjam\Acl\Entity\IdentityHash\IdentityHashNotFoundException $e) {
+					return NULL;
+				}
 
 				if ($validateHash === TRUE) {
 					$this->identityHash = $this->identityHashValidate($sessionIdentity, $identityHash);
@@ -174,7 +179,7 @@ class UserStorage extends Nette\Http\UserStorage
 	}
 
 	/**
-	 * @param SessionUserIdentity        $sessionIdentity
+	 * @param SessionUserIdentity              $sessionIdentity
 	 * @param Entity\IdentityHash\IdentityHash $identityHash
 	 *
 	 * @return null|Entity\IdentityHash\IdentityHash
