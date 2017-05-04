@@ -68,7 +68,6 @@ class UserRepository
 		}
 	}
 
-
 	/**
 	 * @param string      $username
 	 * @param string|null $fetchType
