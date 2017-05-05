@@ -72,11 +72,23 @@ class AclExtension extends Trejjam\BaseExtension\DI\BaseExtension implements IEn
 		$classes['role.cache']->setAutowired(FALSE);
 
 		$containerBuilder = $this->getContainerBuilder();
-		$containerBuilder->getDefinition('security.userStorage')
-						 ->setFactory(Trejjam\Acl\UserStorage::class);
+		if ($containerBuilder->hasDefinition('security.userStorage')) {
+			$userStorage = $containerBuilder->getDefinition('security.userStorage');
+		}
+		else {
+			$userStorage = $containerBuilder->addDefinition('security.userStorage');
+		}
 
-		$containerBuilder->getDefinition('security.user')
-						 ->setClass(Trejjam\Acl\User::class);
+		$userStorage->setFactory(Trejjam\Acl\UserStorage::class);
+
+		if ($containerBuilder->hasDefinition('security.user')) {
+			$user = $containerBuilder->getDefinition('security.user');
+		}
+		else {
+			$user = $containerBuilder->addDefinition('security.user');
+		}
+
+		$user->setClass(Trejjam\Acl\User::class);
 	}
 
 	/**
