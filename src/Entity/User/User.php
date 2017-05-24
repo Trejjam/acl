@@ -157,6 +157,11 @@ abstract class User implements Nette\Security\IIdentity
 		return $this->roles;
 	}
 
+	public function hasRole(Entity\Role\Role $role)
+	{
+		return $this->roles->contains($role);
+	}
+
 	/**
 	 * @return Entity\IdentityHash\IdentityHash[]|Doctrine\Common\Collections\Collection|Doctrine\Common\Collections\Selectable
 	 */
