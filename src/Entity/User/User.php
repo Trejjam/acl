@@ -203,4 +203,8 @@ abstract class User implements Nette\Security\IIdentity
 
 		return $this;
 	}
+
+	public function removeAllRoles() {
+		$this->roles->clear();
+	}
 }
