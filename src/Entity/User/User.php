@@ -82,16 +82,6 @@ abstract class User implements Nette\Security\IIdentity
 	}
 
 	/**
-	 * Returns the ID of user.
-	 *
-	 * @return int
-	 */
-	public function getId()
-	{
-		return $this->id;
-	}
-
-	/**
 	 * @return string
 	 */
 	public function getUsername()
