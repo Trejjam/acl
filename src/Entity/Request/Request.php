@@ -43,7 +43,7 @@ class Request
 	 *
 	 * @ORM\Column(name="used", type="boolean", options={"default":FALSE}, nullable=false)
 	 */
-	private $isUsed = FALSE;
+	private $used = FALSE;
 
 	/**
 	 * @var \DateTime
@@ -73,6 +73,7 @@ class Request
 	{
 		$this->user = $user;
 		$this->type = $type;
+		$this->used = FALSE;
 		$this->extraValue = $extraValue;
 		$this->timeout = $timeout === FALSE ? NULL : $timeout;
 		$this->readableHash = Nette\Utils\Random::generate($hashLength, '0-9A-Z');
@@ -104,7 +105,7 @@ class Request
 	 */
 	public function validateHash(Entity\User\User $user = NULL, $hash, $enableUsed = FALSE)
 	{
-		if ( !$enableUsed && $this->isUsed) {
+		if ( !$enableUsed && $this->used) {
 			throw new AlreadyUsedRequestException;
 		}
 
@@ -120,11 +121,13 @@ class Request
 	}
 
 	/**
+	 * @param bool $used
+	 *
 	 * @return $this
 	 */
-	public function setUsed()
+	public function setUsed($used = TRUE)
 	{
-		$this->isUsed = TRUE;
+		$this->used = $used;
 
 		return $this;
 	}
