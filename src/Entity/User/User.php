@@ -84,7 +84,7 @@ abstract class User implements Nette\Security\IIdentity
 	/**
 	 * @return string
 	 */
-	public function getUsername()
+	public function getUsername() : string
 	{
 		return $this->username;
 	}
