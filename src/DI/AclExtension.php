@@ -40,37 +40,35 @@ class AclExtension extends Trejjam\BaseExtension\DI\BaseExtension implements IEn
 		'authorizator'  => Trejjam\Acl\Authorizator::class,
 	];
 
-	public function loadConfiguration() : void
+	public function loadConfiguration(bool $validateConfig = TRUE) : void
 	{
 		parent::loadConfiguration();
 
-		$config = $this->createConfig();
+		$types = $this->getTypes();
 
-		$classes = $this->getClasses();
-
-		$classes['user.service']->setArguments(
+		$types['user.service']->setArguments(
 			[
-				$config['user']['className'],
+				$this->config['user']['className'],
 			]
 		);
-		$classes['user.repository']->setArguments(
+		$types['user.repository']->setArguments(
 			[
-				$config['user']['className'],
-			]
-		);
-
-		$classes['request.service']->setArguments(
-			[
-				$config['request']['timeout'],
+				$this->config['user']['className'],
 			]
 		);
 
-		$classes['role.repository']->setArguments(
+		$types['request.service']->setArguments(
+			[
+				$this->config['request']['timeout'],
+			]
+		);
+
+		$types['role.repository']->setArguments(
 			[
 				1 => $this->prefix('@role.cache'),
 			]
 		);
-		$classes['role.cache']->setAutowired(FALSE);
+		$types['role.cache']->setAutowired(FALSE);
 
 		$containerBuilder = $this->getContainerBuilder();
 		if ($containerBuilder->hasDefinition('security.userStorage')) {
@@ -89,7 +87,7 @@ class AclExtension extends Trejjam\BaseExtension\DI\BaseExtension implements IEn
 			$user = $containerBuilder->addDefinition('security.user');
 		}
 
-		$user->setClass(Trejjam\Acl\User::class);
+		$user->setType(Trejjam\Acl\User::class);
 	}
 
 	/**
@@ -112,13 +110,11 @@ class AclExtension extends Trejjam\BaseExtension\DI\BaseExtension implements IEn
 	 */
 	public function getDatabaseTypes() : array
 	{
-		$config = $this->createConfig();
-
 		return [
 			'statusEnum'         => Trejjam\Acl\Entity\User\StatusType::class,
 			'statusActivated'    => Trejjam\Acl\Entity\User\StatusActivated::class,
 			'permissionEnum'     => Trejjam\Acl\Entity\Resource\PermissionType::class,
-			'userRequestType'    => $config['request']['typeClass'],
+			'userRequestType'    => $this->config['request']['typeClass'],
 			'identityHashStatus' => Trejjam\Acl\Entity\IdentityHash\IdentityHashStatus::class,
 		];
 	}
@@ -131,10 +127,8 @@ class AclExtension extends Trejjam\BaseExtension\DI\BaseExtension implements IEn
 	 */
 	public function getTargetEntityMappings() : array
 	{
-		$config = $this->createConfig();
-
 		return [
-			Trejjam\Acl\Entity\User\User::class => $config['user']['className'],
+			Trejjam\Acl\Entity\User\User::class => $this->config['user']['className'],
 		];
 	}
 }
