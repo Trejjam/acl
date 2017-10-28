@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Trejjam\Acl\Entity\IdentityHash;
 
@@ -25,14 +26,7 @@ class IdentityHashRepository
 		$this->identityHashService = $identityHashService;
 	}
 
-	/**
-	 * @param int         $id
-	 * @param string|null $fetchType
-	 *
-	 * @return IdentityHash
-	 * @throws IdentityHashNotFoundException
-	 */
-	public function getById($id, $fetchType = NULL)
+	public function getById(int $id, int $fetchType = NULL) : IdentityHash
 	{
 		try {
 			$query = $this->em->createQueryBuilder()
@@ -53,14 +47,7 @@ class IdentityHashRepository
 		}
 	}
 
-	/**
-	 * @param string      $hash
-	 * @param string|null $fetchType
-	 *
-	 * @return IdentityHash
-	 * @throws IdentityHashNotFoundException
-	 */
-	public function getByHash($hash, $fetchType = NULL)
+	public function getByHash(string $hash, int $fetchType = NULL) : IdentityHash
 	{
 		try {
 			$query = $this->em->createQueryBuilder()
@@ -84,16 +71,11 @@ class IdentityHashRepository
 	// =============================================================================
 	// write
 
-	/**
-	 * @param Trejjam\Acl\Entity\User\User $user
-	 * @param string|null                  $ip
-	 * @param int                          $hashLength
-	 *
-	 * @return IdentityHash
-	 * @throws \Exception
-	 */
-	public function createIdentityHash(Trejjam\Acl\Entity\User\User $user, $ip = NULL, $hashLength = IdentityHash::HASH_LENGTH)
-	{
+	public function createIdentityHash(
+		Trejjam\Acl\Entity\User\User $user,
+		string $ip = NULL,
+		int $hashLength = IdentityHash::HASH_LENGTH
+	) : IdentityHash {
 		$identityHash = $this->identityHashService->createIdentityHash($user, $ip, $hashLength);
 
 		$this->em->persist($identityHash);
@@ -102,7 +84,7 @@ class IdentityHashRepository
 		return $identityHash;
 	}
 
-	public function updateIdentityHash(IdentityHash $identityHash)
+	public function updateIdentityHash(IdentityHash $identityHash) : IdentityHash
 	{
 		$this->em->beginTransaction();
 
@@ -120,7 +102,7 @@ class IdentityHashRepository
 		return $identityHash;
 	}
 
-	public function destroyIdentityHash(IdentityHash $identityHash)
+	public function destroyIdentityHash(IdentityHash $identityHash) : IdentityHash
 	{
 		$identityHash->setAction(IdentityHashStatus::STATE_DESTROYED);
 

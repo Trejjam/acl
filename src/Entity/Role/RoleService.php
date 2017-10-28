@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Trejjam\Acl\Entity\Role;
 
@@ -6,14 +7,7 @@ use Trejjam;
 
 class RoleService
 {
-	/**
-	 *
-	 * @param string $name
-	 * @param Role   $parent
-	 *
-	 * @return Role
-	 */
-	public function createRole($name, Role $parent = NULL)
+	public function createRole(string $name, Role $parent = NULL) : Role
 	{
 		return new Role($name, $parent);
 	}

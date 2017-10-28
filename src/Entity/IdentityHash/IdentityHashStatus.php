@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Trejjam\Acl\Entity\IdentityHash;
 
@@ -14,7 +15,7 @@ class IdentityHashStatus extends Entity\Enum
 	const STATE_LOGOUT    = 'logout';
 	const STATE_DESTROYED = 'destroyed';
 
-	static public function getValues()
+	static public function getValues() : array
 	{
 		return [
 			self::STATE_NONE,

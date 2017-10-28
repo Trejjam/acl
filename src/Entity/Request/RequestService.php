@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Trejjam\Acl\Entity\Request;
 
@@ -7,11 +8,11 @@ use Trejjam;
 class RequestService
 {
 	/**
-	 * @var
+	 * @var string
 	 */
 	private $timeout;
 
-	function __construct($timeout)
+	function __construct(string $timeout)
 	{
 		$this->timeout = $timeout;
 	}
@@ -25,8 +26,13 @@ class RequestService
 	 *
 	 * @return Request
 	 */
-	public function createRequest(Trejjam\Acl\Entity\User\User $user, $type, $extraValue = NULL, $timeout = NULL, $hashLength = Request::HASH_LENGTH)
-	{
+	public function createRequest(
+		Trejjam\Acl\Entity\User\User $user,
+		string $type,
+		$extraValue = NULL,
+		$timeout = NULL,
+		$hashLength = Request::HASH_LENGTH
+	) : Request {
 		if (is_null($timeout)) {
 			$timeout = new \DateTime;
 			$timeout->add(\DateInterval::createFromDateString($this->timeout));

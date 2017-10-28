@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Trejjam\Acl\Entity\User;
 
@@ -36,21 +37,14 @@ class UserRepository
 		return $this->em;
 	}
 
-	/**
-	 * @param int         $userId
-	 * @param string|null $fetchType
-	 *
-	 * @return User
-	 * @throws UserNotFoundException
-	 */
-	public function getById($userId, $fetchType = NULL)
+	public function getById(int $id, int $fetchType = NULL) : User
 	{
 		try {
 			$queryBuilder = $this->em->createQueryBuilder()
 									 ->select('user')
 									 ->from($this->userClassName, 'user')
 									 ->andWhere('user.id = :id')
-									 ->setParameter('id', $userId)
+									 ->setParameter('id', $id)
 									 ->setMaxResults(1);
 
 			$this->queryBuilderExtender($queryBuilder);
@@ -64,18 +58,11 @@ class UserRepository
 			return $query->getSingleResult();
 		}
 		catch (Doctrine\ORM\NoResultException $e) {
-			throw new UserNotFoundException($userId, $e);
+			throw new UserNotFoundException($id, $e);
 		}
 	}
 
-	/**
-	 * @param string      $username
-	 * @param string|null $fetchType
-	 *
-	 * @return User
-	 * @throws UserNotFoundException
-	 */
-	public function getByUsername($username, $fetchType = NULL)
+	public function getByUsername(string $username, int $fetchType = NULL) : User
 	{
 		try {
 			$queryBuilder = $this->em->createQueryBuilder()
@@ -99,14 +86,7 @@ class UserRepository
 		}
 	}
 
-	/**
-	 * @param string $activated
-	 *
-	 * @return int
-	 * @throws Doctrine\ORM\NoResultException
-	 * @throws Trejjam\Acl\InvalidArgumentException
-	 */
-	public function getCountActivated($activated = StatusActivated::STATE_ACTIVATED)
+	public function getCountActivated(string $activated = StatusActivated::STATE_ACTIVATED) : int
 	{
 		if ( !in_array($activated, StatusActivated::getValues())) {
 			throw new Trejjam\Acl\InvalidArgumentException;
@@ -118,40 +98,31 @@ class UserRepository
 							  ->from($this->userClassName, 'user')
 							  ->andWhere('user.activated = :activated')->setParameter('activated', $activated);
 
-			return $query->getQuery()
-						 ->getSingleScalarResult();
+			return intval(
+				$query->getQuery()->getSingleScalarResult()
+			);
 		}
 		catch (Doctrine\ORM\NoResultException $e) {
 			throw $e;
 		}
 	}
 
-	/**
-	 * @param bool $showDisabled
-	 *
-	 * @return User[]
-	 */
-	public function findAll($showDisabled = TRUE)
+	public function findAll(bool $showDisabled = TRUE) : array
 	{
-		try {
-			$queryBuilder = $this->em->createQueryBuilder()
-									 ->select('user')
-									 ->from($this->userClassName, 'user');
+		$queryBuilder = $this->em->createQueryBuilder()
+								 ->select('user')
+								 ->from($this->userClassName, 'user');
 
-			if ($showDisabled === FALSE) {
-				$queryBuilder->andWhere('user.status = :status')->setParameter('status', StatusType::STATE_ENABLE);
-			}
-
-			$queryBuilder->orderBy('user.username');
-
-			$this->queryBuilderExtender($queryBuilder);
-
-			return $queryBuilder->getQuery()
-								->getResult();
+		if ($showDisabled === FALSE) {
+			$queryBuilder->andWhere('user.status = :status')->setParameter('status', StatusType::STATE_ENABLE);
 		}
-		catch (Doctrine\ORM\NoResultException $e) {
-			return [];
-		}
+
+		$queryBuilder->orderBy('user.username');
+
+		$this->queryBuilderExtender($queryBuilder);
+
+		return $queryBuilder->getQuery()
+							->getResult();
 	}
 
 	protected function queryBuilderExtender(Doctrine\ORM\QueryBuilder $queryBuilder)
@@ -161,14 +132,7 @@ class UserRepository
 
 	// ------------- write -----------------
 
-	/**
-	 * @param string      $username
-	 * @param string|null $password
-	 *
-	 * @return User
-	 * @throws \Exception
-	 */
-	public function createUser($username, $password = NULL)
+	public function createUser(string $username, string $password = NULL) : User
 	{
 		try {
 			$user = $this->getByUsername($username);
@@ -191,7 +155,7 @@ class UserRepository
 		return $user;
 	}
 
-	public function updateUser(User $user)
+	public function updateUser(User $user) : User
 	{
 		$this->em->beginTransaction();
 
@@ -209,7 +173,7 @@ class UserRepository
 		return $user;
 	}
 
-	public function changePassword(User $user, $password)
+	public function changePassword(User $user, string $password) : User
 	{
 		$user->hashPassword($password);
 
@@ -218,7 +182,7 @@ class UserRepository
 		return $user;
 	}
 
-	public function setActivated(User $user, $activated = TRUE)
+	public function setActivated(User $user, bool $activated = TRUE) : User
 	{
 		$user->setActivated($activated);
 
@@ -227,7 +191,7 @@ class UserRepository
 		return $user;
 	}
 
-	public function addRole(User $user, Entity\Role\Role $role)
+	public function addRole(User $user, Entity\Role\Role $role) : User
 	{
 		$user->addRole($role);
 
@@ -236,7 +200,7 @@ class UserRepository
 		return $user;
 	}
 
-	public function removeRole(User $user, Entity\Role\Role $role)
+	public function removeRole(User $user, Entity\Role\Role $role) : User
 	{
 		$user->removeRole($role);
 

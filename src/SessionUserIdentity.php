@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Trejjam\Acl;
 
@@ -20,50 +21,35 @@ class SessionUserIdentity implements Nette\Security\IIdentity
 	 */
 	private $previousSessionIdentity;
 
-	public function __construct($identityHash, $userId)
-	{
+	public function __construct(
+		string $identityHash,
+		int $userId
+	) {
 		$this->identityHash = $identityHash;
 		$this->userId = $userId;
 	}
 
-	/**
-	 * @return string
-	 */
-	function getId()
+	function getId() : string
 	{
 		return $this->identityHash;
 	}
 
-	/**
-	 * @return string
-	 */
-	function getIdentityHash()
+	function getIdentityHash() : string
 	{
 		return $this->identityHash;
 	}
 
-	/**
-	 * @return int
-	 */
-	public function getUserId()
+	public function getUserId() : int
 	{
 		return $this->userId;
 	}
 
-	/**
-	 * @return static
-	 */
-	public function getPreviousSessionIdentity()
+	public function getPreviousSessionIdentity() : ?self
 	{
 		return $this->previousSessionIdentity;
 	}
 
-	/**
-	 * @param SessionUserIdentity $previousSessionIdentity
-	 *
-	 * @return static
-	 */
-	public function setPreviousSessionIdentity(SessionUserIdentity $previousSessionIdentity)
+	public function setPreviousSessionIdentity(SessionUserIdentity $previousSessionIdentity) : self
 	{
 		$this->previousSessionIdentity = $previousSessionIdentity;
 
@@ -75,8 +61,8 @@ class SessionUserIdentity implements Nette\Security\IIdentity
 	 *
 	 * @return array
 	 */
-	function getRoles()
+	public function getRoles() : array
 	{
-		throw new Trejjam\Utils\RuntimeException();
+		throw new Trejjam\Utils\RuntimeException;
 	}
 }

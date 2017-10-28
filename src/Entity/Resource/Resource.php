@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Trejjam\Acl\Entity\Resource;
 
@@ -59,7 +60,7 @@ class Resource
 		return $this->name;
 	}
 
-	public function getRawName()
+	public function getRawName() : string
 	{
 		return $this->name;
 	}
@@ -73,15 +74,12 @@ class Resource
 		return $this->action;
 	}
 
-	public function getRawAction()
+	public function getRawAction() : string
 	{
 		return $this->action;
 	}
 
-	/**
-	 * @return string
-	 */
-	public function getPermissionType()
+	public function getPermissionType() : string
 	{
 		return $this->permissionType;
 	}

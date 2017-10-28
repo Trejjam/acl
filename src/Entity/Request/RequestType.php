@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Trejjam\Acl\Entity\Request;
 
@@ -11,7 +12,7 @@ class RequestType extends Entity\Enum
 	const STATE_ACTIVATE      = 'activate';
 	const STATE_LOST_PASSWORD = 'lostPassword';
 
-	static public function getValues()
+	static public function getValues() : array
 	{
 		return [
 			self::STATE_ACTIVATE,

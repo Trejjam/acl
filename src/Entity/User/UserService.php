@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Trejjam\Acl\Entity\User;
 
@@ -12,17 +13,12 @@ class UserService
 	 */
 	private $userClassName;
 
-	public function __construct($userClassName = NULL)
+	public function __construct(string $userClassName = NULL)
 	{
 		$this->userClassName = $userClassName ?: User::class;
 	}
 
-	/**
-	 * @param $username
-	 *
-	 * @return User
-	 */
-	public function createUser($username)
+	public function createUser(string $username) : User
 	{
 		return new $this->userClassName($username);
 	}

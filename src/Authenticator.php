@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Trejjam\Acl;
 
@@ -46,7 +47,7 @@ class Authenticator implements Nette\Security\IAuthenticator
 	 * @throws Entity\User\NotEnabledUserException
 	 * @throws InvalidArgumentException
 	 */
-	function authenticate(array $credentials)
+	function authenticate(array $credentials) : Trejjam\Acl\Entity\IdentityHash\IdentityHash
 	{
 		list($username, $password, $enableForceLogin) = $credentials + [NULL, NULL, NULL];
 

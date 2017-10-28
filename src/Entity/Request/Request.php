@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Trejjam\Acl\Entity\Request;
 
@@ -80,12 +81,7 @@ class Request
 		$this->hash = Nette\Security\Passwords::hash($this->readableHash);
 	}
 
-	/**
-	 * @return string
-	 *
-	 * @throws NotReadableHashException
-	 */
-	public function getHash()
+	public function getHash() : string
 	{
 		if (is_null($this->readableHash)) {
 			throw new NotReadableHashException;
@@ -94,17 +90,11 @@ class Request
 		return $this->readableHash;
 	}
 
-	/**
-	 * @param Entity\User\User|null $user
-	 * @param string                $hash
-	 * @param bool                  $enableUsed
-	 *
-	 * @return bool
-	 * @throws InvalidRequestException|AlreadyUsedRequestException
-	 * @throws InvalidRequestException|ExpiredRequestException
-	 */
-	public function validateHash(Entity\User\User $user = NULL, $hash, $enableUsed = FALSE)
-	{
+	public function validateHash(
+		?Entity\User\User $user,
+		string $hash,
+		bool $enableUsed = FALSE
+	) : bool {
 		if ( !$enableUsed && $this->used) {
 			throw new AlreadyUsedRequestException;
 		}
@@ -120,39 +110,25 @@ class Request
 		return Nette\Security\Passwords::verify($hash, $this->hash);
 	}
 
-	/**
-	 * @param bool $used
-	 *
-	 * @return $this
-	 */
-	public function setUsed($used = TRUE)
-	{
-		$this->used = $used;
-
-		return $this;
-	}
-
-	/**
-	 * @return string
-	 */
-	public function getType()
+	public function getType() : string
 	{
 		return $this->type;
 	}
 
-	/**
-	 * @return string
-	 */
-	public function getExtraValue()
+	public function getExtraValue() : string
 	{
 		return $this->extraValue;
 	}
 
-	/**
-	 * @return Entity\User\User
-	 */
-	public function getUser()
+	public function getUser() : Entity\User\User
 	{
 		return $this->user;
+	}
+
+	public function setUsed(bool $used = TRUE) : self
+	{
+		$this->used = $used;
+
+		return $this;
 	}
 }

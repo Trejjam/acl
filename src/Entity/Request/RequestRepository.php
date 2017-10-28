@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Trejjam\Acl\Entity\Request;
 
@@ -25,13 +26,7 @@ class RequestRepository
 		$this->requestService = $requestService;
 	}
 
-	/**
-	 * @param $id
-	 *
-	 * @return Request
-	 * @throws RequestNotFoundException
-	 */
-	public function getById($id)
+	public function getById(int $id) : Request
 	{
 		try {
 			return $this->em->createQueryBuilder()
@@ -49,8 +44,13 @@ class RequestRepository
 	// =============================================================================
 	// write
 
-	public function createRequest(Trejjam\Acl\Entity\User\User $user, $type, $extraValue = NULL, $timeout = NULL, $hashLength = Request::HASH_LENGTH)
-	{
+	public function createRequest(
+		Trejjam\Acl\Entity\User\User $user,
+		string $type,
+		$extraValue = NULL,
+		$timeout = NULL,
+		int $hashLength = Request::HASH_LENGTH
+	) : Request {
 		$request = $this->requestService->createRequest($user, $type, $extraValue, $timeout, $hashLength);
 
 		$this->em->persist($request);
@@ -59,7 +59,7 @@ class RequestRepository
 		return $request;
 	}
 
-	public function updateRequest(Request $request)
+	public function updateRequest(Request $request) : Request
 	{
 		$this->em->beginTransaction();
 

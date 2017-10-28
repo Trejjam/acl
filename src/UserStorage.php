@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Trejjam\Acl;
 
@@ -22,32 +23,18 @@ class UserStorage extends Nette\Http\UserStorage
 	 */
 	protected $identityHash;
 
-	/**
-	 * UserStorage constructor.
-	 *
-	 * @param Nette\Http\Session                         $sessionHandler
-	 * @param Entity\User\UserRepository                 $userRepository
-	 * @param Entity\IdentityHash\IdentityHashRepository $identityHashRepository
-	 */
 	public function __construct(
 		Nette\Http\Session $sessionHandler,
 		Trejjam\Acl\Entity\User\UserRepository $userRepository,
 		Trejjam\Acl\Entity\IdentityHash\IdentityHashRepository $identityHashRepository
 	) {
 		parent::__construct($sessionHandler);
+
 		$this->userRepository = $userRepository;
 		$this->identityHashRepository = $identityHashRepository;
 	}
 
-	/**
-	 * Sets the user identity.
-	 *
-	 * @param Nette\Security\IIdentity $identity
-	 *
-	 * @return static
-	 * @throws LogicException
-	 */
-	public function setIdentity(Nette\Security\IIdentity $identity = NULL)
+	public function setIdentity(Nette\Security\IIdentity $identity = NULL) : self
 	{
 		if ( !is_null($identity)) {
 			throw new LogicException('Do not use this method, use setIdentityHash instead');
@@ -70,7 +57,7 @@ class UserStorage extends Nette\Http\UserStorage
 	public function setIdentityHash(
 		Trejjam\Acl\Entity\IdentityHash\IdentityHash $identityHash = NULL,
 		SessionUserIdentity $previousSessionUserIdentity = NULL
-	) {
+	) : self {
 		$identity = NULL;
 
 
@@ -88,7 +75,7 @@ class UserStorage extends Nette\Http\UserStorage
 		return $this;
 	}
 
-	public function setSessionIdentityHash(SessionUserIdentity $sessionUserIdentity)
+	public function setSessionIdentityHash(SessionUserIdentity $sessionUserIdentity) : self
 	{
 		$session = $this->getSessionSection(TRUE);
 		$session->identity = $sessionUserIdentity;
@@ -117,7 +104,7 @@ class UserStorage extends Nette\Http\UserStorage
 	 * @return Nette\Security\IIdentity|Entity\User\User|null
 	 * @throws \Doctrine\ORM\NonUniqueResultException
 	 */
-	public function getIdentity()
+	public function getIdentity() : ?Nette\Security\IIdentity
 	{
 		$session = $this->getSessionSection(FALSE);
 
@@ -137,8 +124,10 @@ class UserStorage extends Nette\Http\UserStorage
 	 *
 	 * @return null|Entity\IdentityHash\IdentityHash
 	 */
-	public function getIdentityHash(Nette\Http\SessionSection $session = NULL, $validateHash = TRUE)
-	{
+	public function getIdentityHash(
+		Nette\Http\SessionSection $session = NULL,
+		bool $validateHash = TRUE
+	) : ? Trejjam\Acl\Entity\IdentityHash\IdentityHash {
 		if (is_null($this->identityHash)) {
 			$sessionIdentity = $this->getSessionIdentity($session);
 
@@ -159,12 +148,7 @@ class UserStorage extends Nette\Http\UserStorage
 		return $this->identityHash;
 	}
 
-	/**
-	 * @param Nette\Http\SessionSection|null $session
-	 *
-	 * @return SessionUserIdentity
-	 */
-	public function getSessionIdentity(Nette\Http\SessionSection $session = NULL)
+	public function getSessionIdentity(Nette\Http\SessionSection $session = NULL) : ? SessionUserIdentity
 	{
 		$session = $session ?: $this->getSessionSection(FALSE);
 
@@ -178,14 +162,10 @@ class UserStorage extends Nette\Http\UserStorage
 		return NULL;
 	}
 
-	/**
-	 * @param SessionUserIdentity              $sessionIdentity
-	 * @param Entity\IdentityHash\IdentityHash $identityHash
-	 *
-	 * @return null|Entity\IdentityHash\IdentityHash
-	 */
-	protected function identityHashValidate(SessionUserIdentity $sessionIdentity, Trejjam\Acl\Entity\IdentityHash\IdentityHash $identityHash)
-	{
+	protected function identityHashValidate(
+		SessionUserIdentity $sessionIdentity,
+		Trejjam\Acl\Entity\IdentityHash\IdentityHash $identityHash
+	) : ?Entity\IdentityHash\IdentityHash {
 		if ($sessionIdentity->getUserId() !== $identityHash->getUser()->getId()) {
 			return NULL;
 		}

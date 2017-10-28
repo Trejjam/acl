@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Trejjam\Acl\Entity\User;
 
@@ -14,7 +15,7 @@ class StatusType extends Entity\Enum
 	const STATE_DISABLE = 'disable';
 	const STATE_DELETE  = 'delete';
 
-	static public function getValues()
+	static public function getValues() : array
 	{
 		return [
 			self::STATE_ENABLE,

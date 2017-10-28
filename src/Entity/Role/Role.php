@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Trejjam\Acl\Entity\Role;
 
@@ -49,7 +50,7 @@ class Role
 	 */
 	private $resources;
 
-	public function __construct($name, Role $parent = NULL)
+	public function __construct(string $name, Role $parent = NULL)
 	{
 		$this->name = $name;
 		$this->setParent($parent);
@@ -60,7 +61,7 @@ class Role
 	/**
 	 * @return string
 	 */
-	public function getName()
+	public function getName() : string
 	{
 		return $this->name;
 	}
@@ -68,7 +69,7 @@ class Role
 	/**
 	 * @return string
 	 */
-	public function getInfo()
+	public function getInfo() : string
 	{
 		return $this->info;
 	}
@@ -76,12 +77,12 @@ class Role
 	/**
 	 * @return Role[]
 	 */
-	public function getChildren()
+	public function getChildren() : array
 	{
 		return $this->children;
 	}
 
-	public function getDepth()
+	public function getDepth() : int
 	{
 		if (is_null($this->parent)) {
 			return 0;
@@ -90,7 +91,7 @@ class Role
 		return 1 + $this->parent->getDepth();
 	}
 
-	protected function setParent(Role $role = NULL)
+	protected function setParent(Role $role = NULL) : self
 	{
 		$this->parent = $role;
 
@@ -107,7 +108,7 @@ class Role
 	 * @internal
 	 * @return $this
 	 */
-	public function addChild(Role $role)
+	public function addChild(Role $role) : self
 	{
 		$this->children[] = $role;
 
@@ -120,7 +121,7 @@ class Role
 	 *
 	 * @return bool
 	 */
-	public function isAllowed($resource, $privilege)
+	public function isAllowed($resource, $privilege) : bool
 	{
 		/** @var Entity\Resource\Resource $_resource */
 		foreach ($this->resources as $_resource) {
@@ -149,7 +150,7 @@ class Role
 	 *
 	 * @return bool
 	 */
-	public function isChildOf(array $roles)
+	public function isChildOf(array $roles) : bool
 	{
 		if (in_array($this, $roles, TRUE)) {
 			return TRUE;

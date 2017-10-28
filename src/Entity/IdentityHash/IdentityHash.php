@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Trejjam\Acl\Entity\IdentityHash;
 
@@ -10,8 +11,6 @@ use Trejjam;
 use Trejjam\Acl\Entity;
 
 /**
- * IdentityHash
- *
  * @ORM\Table(name="users__identity_hash")
  * @ORM\Entity
  */
@@ -52,54 +51,40 @@ class IdentityHash
 	 */
 	private $user;
 
-	public function __construct(Entity\User\User $user, $ip, $hashLength = self::HASH_LENGTH)
-	{
+	public function __construct(
+		Entity\User\User $user,
+		string $ip,
+		int $hashLength = self::HASH_LENGTH
+	) {
 		$this->hash = Nette\Utils\Random::generate($hashLength, '0-9A-Z');
 		$this->ip = $ip;
 		$this->action = IdentityHashStatus::STATE_NONE;
 		$this->user = $user;
 	}
 
-	/**
-	 * @return string
-	 */
-	public function getHash()
+	public function getHash() : string
 	{
 		return $this->hash;
 	}
 
-	/**
-	 * @return string
-	 */
-	public function getIp()
+	public function getIp() : string
 	{
 		return $this->ip;
 	}
 
-	/**
-	 * @return string
-	 */
-	public function getAction()
+	public function getAction() : string
 	{
 		return $this->action;
 	}
 
-	/**
-	 * @param string $action
-	 *
-	 * @return $this
-	 */
-	public function setAction($action)
+	public function setAction(string $action) : self
 	{
 		$this->action = $action;
 
 		return $this;
 	}
 
-	/**
-	 * @return Entity\User\User
-	 */
-	public function getUser()
+	public function getUser() : Entity\User\User
 	{
 		return $this->user;
 	}

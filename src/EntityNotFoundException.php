@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Trejjam\Acl;
 
@@ -20,7 +21,7 @@ class EntityNotFoundException extends InvalidArgumentException
 		$this->exceptionType = static::class;
 	}
 
-	public function getExceptionType($withNamespace = TRUE)
+	public function getExceptionType(bool $withNamespace = TRUE)
 	{
 		if ($withNamespace) {
 			return $this->exceptionType;

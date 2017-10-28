@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Trejjam\Acl\Entity\User;
 
@@ -21,7 +22,7 @@ class UserAlreadyExistException extends Acl\LogicException
 	/**
 	 * @return User
 	 */
-	public function getUser()
+	public function getUser() : User
 	{
 		return $this->user;
 	}

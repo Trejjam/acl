@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Trejjam\Acl\DI;
 
@@ -39,7 +40,7 @@ class AclExtension extends Trejjam\BaseExtension\DI\BaseExtension implements IEn
 		'authorizator'  => Trejjam\Acl\Authorizator::class,
 	];
 
-	public function loadConfiguration()
+	public function loadConfiguration() : void
 	{
 		parent::loadConfiguration();
 
@@ -96,7 +97,7 @@ class AclExtension extends Trejjam\BaseExtension\DI\BaseExtension implements IEn
 	 *
 	 * @return array
 	 */
-	public function getEntityMappings()
+	public function getEntityMappings() : array
 	{
 		return [
 			'Trejjam\Acl\Entity' => implode(DIRECTORY_SEPARATOR, [__DIR__, '..', 'Entity']),
@@ -109,7 +110,7 @@ class AclExtension extends Trejjam\BaseExtension\DI\BaseExtension implements IEn
 	 * @return array
 	 * @throws Nette\Utils\AssertionException
 	 */
-	public function getDatabaseTypes()
+	public function getDatabaseTypes() : array
 	{
 		$config = $this->createConfig();
 
@@ -128,7 +129,7 @@ class AclExtension extends Trejjam\BaseExtension\DI\BaseExtension implements IEn
 	 * @return array
 	 * @throws Nette\Utils\AssertionException
 	 */
-	public function getTargetEntityMappings()
+	public function getTargetEntityMappings() : array
 	{
 		$config = $this->createConfig();
 

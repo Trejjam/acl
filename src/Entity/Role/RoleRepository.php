@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Trejjam\Acl\Entity\Role;
 
@@ -32,13 +33,7 @@ class RoleRepository
 		$this->roleService = $roleService;
 	}
 
-	/**
-	 * @param $id
-	 *
-	 * @return Role
-	 * @throws RoleNotFoundException
-	 */
-	public function getById($id)
+	public function getById(int $id) : Role
 	{
 		try {
 			return $this->em->createQueryBuilder()
@@ -53,14 +48,7 @@ class RoleRepository
 		}
 	}
 
-	/**
-	 * @param string $name
-	 * @param bool   $useCache
-	 *
-	 * @return Role
-	 * @throws RoleNotFoundException
-	 */
-	public function getByName($name, $useCache = FALSE)
+	public function getByName(string $name, bool $useCache = FALSE) : Role
 	{
 		//It is probably bad idea, need check in bigger project
 		if (FALSE && $useCache) {
@@ -87,7 +75,7 @@ class RoleRepository
 	/**
 	 * @return Role[]
 	 */
-	public function findRoot()
+	public function findRoot() : array
 	{
 		try {
 			return $this->em->createQueryBuilder()
@@ -105,7 +93,7 @@ class RoleRepository
 	/**
 	 * @return Role[]
 	 */
-	public function findAll()
+	public function findAll() : array
 	{
 		try {
 			return $this->em->createQueryBuilder()
@@ -122,15 +110,7 @@ class RoleRepository
 	// =============================================================================
 	// write
 
-	/**
-	 *
-	 * @param string    $name
-	 * @param Role|null $parent
-	 *
-	 * @return Role
-	 * @throws \Exception
-	 */
-	public function createRequest($name, Role $parent = NULL)
+	public function createRequest(string $name, Role $parent = NULL) : Role
 	{
 		$role = $this->roleService->createRole($name, $parent);
 
@@ -140,7 +120,7 @@ class RoleRepository
 		return $role;
 	}
 
-	public function updateRole(Role $role)
+	public function updateRole(Role $role) : Role
 	{
 		$this->em->beginTransaction();
 

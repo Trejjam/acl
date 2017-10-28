@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Trejjam\Acl\Entity\User;
 
@@ -6,8 +7,6 @@ use Nette;
 use Doctrine;
 use Kdyby;
 use Doctrine\ORM\Mapping as ORM;
-use Kdyby\Doctrine\EntityManager;
-use Trejjam\Acl;
 use Trejjam\Acl\Entity;
 
 /**
@@ -70,7 +69,7 @@ abstract class User implements Nette\Security\IIdentity
 	 */
 	protected $identityHash;
 
-	public function __construct($username)
+	public function __construct(string $username)
 	{
 		$this->createdDate = new \DateTime;
 		$this->status = StatusType::STATE_ENABLE;
@@ -81,58 +80,36 @@ abstract class User implements Nette\Security\IIdentity
 		$this->setUsername($username);
 	}
 
-	/**
-	 * @return string
-	 */
 	public function getUsername() : string
 	{
 		return $this->username;
 	}
 
-	/**
-	 * @return string
-	 */
-	public function getStatus()
+	public function getStatus() : string
 	{
 		return $this->status;
 	}
 
-	/**
-	 * @return bool
-	 */
-	public function isActivated()
+	public function isActivated() : bool
 	{
 		return $this->activated;
 	}
 
-	/**
-	 * @return string
-	 */
-	public function getPassword()
+	public function getPassword() : string
 	{
 		return $this->password;
 	}
 
-	/**
-	 * @param $password
-	 *
-	 * @return $this
-	 */
-	public function hashPassword($password)
+	public function hashPassword(string $password) : self
 	{
 		$this->password = Nette\Security\Passwords::hash($password);
 
 		return $this;
 	}
 
-	/**
-	 * @param bool $activated
-	 *
-	 * @return $this
-	 */
-	public function setActivated($activated = TRUE)
+	public function setActivated(bool $activated = TRUE) : self
 	{
-		$this->activated = (bool)$activated;
+		$this->activated = $activated;
 
 		return $this;
 	}
@@ -147,7 +124,7 @@ abstract class User implements Nette\Security\IIdentity
 		return $this->roles;
 	}
 
-	public function hasRole(Entity\Role\Role $role)
+	public function hasRole(Entity\Role\Role $role) : bool
 	{
 		return $this->roles->contains($role);
 	}
@@ -160,41 +137,34 @@ abstract class User implements Nette\Security\IIdentity
 		return $this->identityHash;
 	}
 
-	/**
-	 * @return \DateTime
-	 */
-	public function getDateCreated()
+	public function getDateCreated() : \DateTime
 	{
 		return $this->createdDate;
 	}
 
-	/**
-	 * @param string $username
-	 *
-	 * @return static
-	 */
-	public function setUsername($username)
+	public function setUsername(string $username) : self
 	{
 		$this->username = $username;
 
 		return $this;
 	}
 
-	public function addRole(Entity\Role\Role $role)
+	public function addRole(Entity\Role\Role $role) : self
 	{
 		$this->roles->add($role);
 
 		return $this;
 	}
 
-	public function removeRole(Entity\Role\Role $role)
+	public function removeRole(Entity\Role\Role $role) : self
 	{
 		$this->roles->removeElement($role);
 
 		return $this;
 	}
 
-	public function removeAllRoles() {
+	public function removeAllRoles() : void
+	{
 		$this->roles->clear();
 	}
 }

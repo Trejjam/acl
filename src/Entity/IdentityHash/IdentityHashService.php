@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Trejjam\Acl\Entity\IdentityHash;
 
@@ -17,15 +18,11 @@ class IdentityHashService
 		$this->request = $request;
 	}
 
-	/**
-	 * @param Trejjam\Acl\Entity\User\User $user
-	 * @param string                       $ip
-	 * @param int                          $hashLength
-	 *
-	 * @return IdentityHash
-	 */
-	public function createIdentityHash(Trejjam\Acl\Entity\User\User $user, $ip = NULL, $hashLength = IdentityHash::HASH_LENGTH)
-	{
+	public function createIdentityHash(
+		Trejjam\Acl\Entity\User\User $user,
+		string $ip = NULL,
+		int $hashLength = IdentityHash::HASH_LENGTH
+	) : IdentityHash {
 		if (is_null($ip)) {
 			$ip = $this->request->getRemoteAddress();
 		}

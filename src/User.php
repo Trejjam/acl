@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Trejjam\Acl;
 
@@ -7,10 +8,6 @@ use Doctrine;
 use Trejjam;
 
 /**
- * Class User
- *
- * @package Trejjam\Acl
- *
  * @method Doctrine\Common\Collections\Collection|Entity\Role\Role[] getRoles()
  * @method Authenticator getAuthenticator($need = TRUE)
  *
@@ -89,8 +86,11 @@ class User extends Nette\Security\User
 	 * @throws Entity\User\NotEnabledUserException
 	 * @throws Entity\User\NotActivatedUserException
 	 */
-	public function login($username = NULL, $password = NULL, $enableForceLogin = FALSE)
-	{
+	public function login(
+		$username = NULL,
+		$password = NULL,
+		bool $enableForceLogin = FALSE
+	) : void {
 		$this->logout(TRUE);
 		$identityHash = $this->getAuthenticator()->authenticate(func_get_args());
 		$this->storage->setIdentityHash($identityHash);
@@ -98,7 +98,7 @@ class User extends Nette\Security\User
 		$this->onLoggedIn($this);
 	}
 
-	public function impersonate(Trejjam\Acl\Entity\User\User $user)
+	public function impersonate(Trejjam\Acl\Entity\User\User $user) : void
 	{
 		$previousSessionIdentityHash = $this->storage->getSessionIdentity();
 		$identityHash = $this->getAuthenticator()->authenticate([$user, NULL, TRUE]);
@@ -107,7 +107,7 @@ class User extends Nette\Security\User
 		$this->onLoggedIn($this);
 	}
 
-	public function isImpersonated()
+	public function isImpersonated() : bool
 	{
 		$identityHash = $this->storage->getSessionIdentity();
 		if (is_null($identityHash)) {
@@ -119,7 +119,7 @@ class User extends Nette\Security\User
 		return !is_null($previousIdentityHash);
 	}
 
-	public function stopImpersonate()
+	public function stopImpersonate() : void
 	{
 		$sessionIdentityHash = $this->storage->getSessionIdentity();
 		if (is_null($sessionIdentityHash)) {
@@ -143,7 +143,7 @@ class User extends Nette\Security\User
 	 *
 	 * @return bool
 	 */
-	public function isInRole($role)
+	public function isInRole($role) : bool
 	{
 		if ($role instanceof Trejjam\Acl\Entity\Role\Role) {
 			$roles = $this->getRoles()->getValues();
