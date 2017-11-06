@@ -75,9 +75,9 @@ class Role
 	}
 
 	/**
-	 * @return Role[]
+	 * @return Role[]|Doctrine\Common\Collections\Collection|Doctrine\Common\Collections\Selectable
 	 */
-	public function getChildren() : array
+	public function getChildren() : Doctrine\Common\Collections\Collection
 	{
 		return $this->children;
 	}
