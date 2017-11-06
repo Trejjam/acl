@@ -16,7 +16,7 @@ class EntityNotFoundException extends InvalidArgumentException
 			$previous = $code;
 			$code = 0;
 		}
-		parent::__construct($message, $code, $previous);
+		parent::__construct(strval($message), $code, $previous);
 
 		$this->exceptionType = static::class;
 	}
