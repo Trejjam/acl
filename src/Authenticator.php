@@ -56,7 +56,11 @@ class Authenticator implements Nette\Security\IAuthenticator
 		}
 
 		if ($username instanceof SessionUserIdentity) {
-			$identityHash = $this->identityHashRepository->getById($username->getId(), Doctrine\ORM\Mapping\ClassMetadata::FETCH_EAGER);
+			$identityHash = $this->identityHashRepository->getByHash(
+				$username->getIdentityHash(),
+				Doctrine\ORM\Mapping\ClassMetadata::FETCH_EAGER
+			);
+
 			$user = $identityHash->getUser();
 			$username = $user->getUsername();
 		}
@@ -65,7 +69,10 @@ class Authenticator implements Nette\Security\IAuthenticator
 			$username = $user->getUsername();
 		}
 		else if (is_string($username)) {
-			$user = $this->userRepository->getByUsername($username, Doctrine\ORM\Mapping\ClassMetadata::FETCH_EAGER);
+			$user = $this->userRepository->getByUsername(
+				$username,
+				Doctrine\ORM\Mapping\ClassMetadata::FETCH_EAGER
+			);
 		}
 		else {
 			$className = get_class($username);

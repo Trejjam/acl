@@ -60,7 +60,6 @@ class UserStorage extends Nette\Http\UserStorage
 	) : self {
 		$identity = NULL;
 
-
 		if ( !is_null($identityHash)) {
 			$identity = new SessionUserIdentity($identityHash->getHash(), $identityHash->getUser()->getId());
 
