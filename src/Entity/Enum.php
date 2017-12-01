@@ -7,7 +7,7 @@ use Doctrine;
 use Kdyby;
 use Nette;
 
-abstract class Enum extends Kdyby\Doctrine\Types\Enum
+abstract class Enum extends Doctrine\DBAL\Types\Type
 {
 	const ENUM_NAME = 'DEFINE ME!';
 
