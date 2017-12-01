@@ -14,7 +14,7 @@
 	],
 	"support": {
 		"email": "jan.trejbal@tremi.cz",
-		"issues": "https://gitlab.trem.in/trejjam/acl/issues"
+		"issues": "https://gitlab.scalesoft.cz/trejjam/acl/issues"
 	},
 	"require": {
 		"php": ">=7.1",
