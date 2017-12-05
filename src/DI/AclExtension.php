@@ -40,9 +40,18 @@ class AclExtension extends Trejjam\BaseExtension\DI\BaseExtension implements IEn
 		'authorizator'  => Trejjam\Acl\Authorizator::class,
 	];
 
+	public function setConfig(array $config)
+	{
+		$this->config = $config;
+
+		$this->validateConfig($this->default);
+
+		return $this;
+	}
+
 	public function loadConfiguration(bool $validateConfig = TRUE) : void
 	{
-		parent::loadConfiguration();
+		parent::loadConfiguration(FALSE);
 
 		$types = $this->getTypes();
 
