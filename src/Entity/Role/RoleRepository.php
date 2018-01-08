@@ -72,6 +72,16 @@ class RoleRepository
 		}
 	}
 
+	public function findByName(array $nameArray)
+	{
+		return $this->em->createQueryBuilder()
+						->select('role')
+						->from(Role::class, 'role')
+						->andWhere('role.name IN (:roles)')->setParameter('roles', $nameArray)
+						->getQuery()
+						->getResult();
+	}
+
 	/**
 	 * @return Role[]
 	 */
