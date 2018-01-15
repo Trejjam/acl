@@ -107,7 +107,7 @@ class AclExtension extends Trejjam\BaseExtension\DI\BaseExtension implements IEn
 	public function getEntityMappings() : array
 	{
 		return [
-			'Trejjam\Acl\Entity' => implode(DIRECTORY_SEPARATOR, [__DIR__, '..', 'Entity']),
+			'Trejjam\Acl\Entity' => dirname(__DIR__) . DIRECTORY_SEPARATOR . 'Entity',
 		];
 	}
 
