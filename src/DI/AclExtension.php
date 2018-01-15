@@ -115,7 +115,6 @@ class AclExtension extends Trejjam\BaseExtension\DI\BaseExtension implements IEn
 	 * Returns array of typeName => typeClass.
 	 *
 	 * @return array
-	 * @throws Nette\Utils\AssertionException
 	 */
 	public function getDatabaseTypes() : array
 	{
@@ -132,7 +131,6 @@ class AclExtension extends Trejjam\BaseExtension\DI\BaseExtension implements IEn
 	 * Returns associative array of Interface => Class definition
 	 *
 	 * @return array
-	 * @throws Nette\Utils\AssertionException
 	 */
 	public function getTargetEntityMappings() : array
 	{
