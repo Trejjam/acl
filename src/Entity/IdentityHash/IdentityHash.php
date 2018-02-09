@@ -59,7 +59,7 @@ class IdentityHash
 		$this->hash = Nette\Utils\Random::generate($hashLength, '0-9A-Z');
 		$this->ip = $ip;
 		$this->action = IdentityHashStatus::STATE_NONE;
-		$this->user = $user;
+		$this->setUser($user);
 	}
 
 	public function getHash() : string
@@ -87,6 +87,14 @@ class IdentityHash
 	public function getUser() : Entity\User\User
 	{
 		return $this->user;
+	}
+
+	private function setUser(Entity\User\User $user) : self
+	{
+		$this->user = $user;
+		$this->user->appendIdentityHash($this);
+
+		return $this;
 	}
 }
 

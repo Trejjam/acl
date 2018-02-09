@@ -177,4 +177,17 @@ abstract class User implements Nette\Security\IIdentity
 	{
 		$this->roles->clear();
 	}
+
+	/**
+	 * @param Entity\IdentityHash\IdentityHash $identityHash
+	 *
+	 * @internal
+	 * @return static
+	 */
+	public function appendIdentityHash(Entity\IdentityHash\IdentityHash $identityHash) : self
+	{
+		$this->identityHash->add($identityHash);
+
+		return $this;
+	}
 }
