@@ -132,8 +132,18 @@ abstract class User implements Nette\Security\IIdentity
 	/**
 	 * @return Entity\IdentityHash\IdentityHash[]|Doctrine\Common\Collections\Collection|Doctrine\Common\Collections\Selectable
 	 */
-	public function getIdentityHash()
+	public function getIdentityHash(bool $fetchAll = FALSE)
 	{
+		if ( !$fetchAll) {
+			$criteria = Doctrine\Common\Collections\Criteria::create();
+			$criteria->andWhere($criteria::expr()->in('action', [
+				Entity\IdentityHash\IdentityHashStatus::STATE_NONE,
+				Entity\IdentityHash\IdentityHashStatus::STATE_RELOAD,
+			]));
+
+			return $this->identityHash->matching($criteria);
+		}
+
 		return $this->identityHash;
 	}
 
