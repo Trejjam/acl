@@ -34,8 +34,8 @@ class RequestService
 		$hashLength = Request::HASH_LENGTH
 	) : Request {
 		if (is_null($timeout)) {
-			$timeout = new \DateTimeImmutable;
-			$timeout->add(\DateInterval::createFromDateString($this->timeout));
+			$timeout = (new \DateTimeImmutable)
+				->add(\DateInterval::createFromDateString($this->timeout));
 		}
 		else if ($timeout === FALSE) {
 			$timeout = NULL;
