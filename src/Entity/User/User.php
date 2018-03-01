@@ -45,9 +45,9 @@ abstract class User implements Nette\Security\IIdentity
 	protected $password;
 
 	/**
-	 * @var \DateTime
+	 * @var \DateTimeImmutable
 	 *
-	 * @ORM\Column(name="date_created", type="datetime")
+	 * @ORM\Column(name="date_created", type="datetime_immutable")
 	 */
 	protected $createdDate;
 
@@ -71,7 +71,7 @@ abstract class User implements Nette\Security\IIdentity
 
 	public function __construct(string $username)
 	{
-		$this->createdDate = new \DateTime;
+		$this->createdDate = new \DateTimeImmutable;
 		$this->status = StatusType::STATE_ENABLE;
 		$this->activated = FALSE;
 		$this->roles = new Doctrine\Common\Collections\ArrayCollection;
@@ -147,7 +147,7 @@ abstract class User implements Nette\Security\IIdentity
 		return $this->identityHash;
 	}
 
-	public function getDateCreated() : \DateTime
+	public function getDateCreated() : \DateTimeImmutable
 	{
 		return $this->createdDate;
 	}

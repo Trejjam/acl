@@ -47,9 +47,9 @@ class Request
 	private $used = FALSE;
 
 	/**
-	 * @var \DateTime
+	 * @var \DateTimeImmutable
 	 *
-	 * @ORM\Column(name="timeout", type="datetime", nullable=true)
+	 * @ORM\Column(name="timeout", type="datetime_immutable", nullable=true)
 	 */
 	private $timeout;
 
@@ -64,19 +64,22 @@ class Request
 	 * @var Entity\User\User
 	 *
 	 * @ORM\ManyToOne(targetEntity=Entity\User\User::class)
-	 * @ORM\JoinColumns({
-	 *   @ORM\JoinColumn(name="user_id", referencedColumnName="id")
-	 * })
+	 * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
 	 */
 	private $user;
 
-	public function __construct(Entity\User\User $user, $type, $extraValue, $timeout, $hashLength = self::HASH_LENGTH)
-	{
+	public function __construct(
+		Entity\User\User $user,
+		string $type,
+		string $extraValue,
+		?\DateTimeImmutable $timeout,
+		int $hashLength = self::HASH_LENGTH
+	) {
 		$this->user = $user;
 		$this->type = $type;
 		$this->used = FALSE;
 		$this->extraValue = $extraValue;
-		$this->timeout = $timeout === FALSE ? NULL : $timeout;
+		$this->timeout = $timeout;
 		$this->readableHash = Nette\Utils\Random::generate($hashLength, '0-9A-Z');
 		$this->hash = Nette\Security\Passwords::hash($this->readableHash);
 	}
@@ -99,7 +102,7 @@ class Request
 			throw new AlreadyUsedRequestException;
 		}
 
-		if ( !is_null($this->timeout) && $this->timeout < new Nette\Utils\DateTime) {
+		if ( !is_null($this->timeout) && $this->timeout < new \DateTimeImmutable) {
 			throw new ExpiredRequestException;
 		}
 

@@ -18,11 +18,11 @@ class RequestService
 	}
 
 	/**
-	 * @param Trejjam\Acl\Entity\User\User $user
-	 * @param string                       $type
-	 * @param string|int|bool|null         $extraValue
-	 * @param \DateTime|FALSE|NULL         $timeout
-	 * @param int                          $hashLength
+	 * @param Trejjam\Acl\Entity\User\User  $user
+	 * @param string                        $type
+	 * @param string|null                   $extraValue
+	 * @param \DateTimeImmutable|FALSE|NULL $timeout
+	 * @param int                           $hashLength
 	 *
 	 * @return Request
 	 */
@@ -34,8 +34,11 @@ class RequestService
 		$hashLength = Request::HASH_LENGTH
 	) : Request {
 		if (is_null($timeout)) {
-			$timeout = new \DateTime;
+			$timeout = new \DateTimeImmutable;
 			$timeout->add(\DateInterval::createFromDateString($this->timeout));
+		}
+		else if ($timeout === FALSE) {
+			$timeout = NULL;
 		}
 
 		return new Request($user, $type, $extraValue, $timeout, $hashLength);
