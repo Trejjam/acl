@@ -29,7 +29,7 @@ class RequestService
 	public function createRequest(
 		Trejjam\Acl\Entity\User\User $user,
 		string $type,
-		$extraValue = NULL,
+		?string $extraValue = NULL,
 		$timeout = NULL,
 		$hashLength = Request::HASH_LENGTH
 	) : Request {

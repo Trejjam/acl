@@ -71,7 +71,7 @@ class Request
 	public function __construct(
 		Entity\User\User $user,
 		string $type,
-		string $extraValue,
+		?string $extraValue,
 		?\DateTimeImmutable $timeout,
 		int $hashLength = self::HASH_LENGTH
 	) {
