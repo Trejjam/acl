@@ -96,6 +96,7 @@ class AclExtension extends Trejjam\BaseExtension\DI\BaseExtension implements IEn
 			$user = $containerBuilder->addDefinition('security.user');
 		}
 
+		$user->setFactory(Trejjam\Acl\User::class);
 		$user->setType(Trejjam\Acl\User::class);
 	}
 
