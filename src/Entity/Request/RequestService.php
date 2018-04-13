@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Trejjam\Acl\Entity\Request;
 
+use Mangoweb\Clock\Clock;
 use Trejjam;
 
 class RequestService
@@ -34,7 +35,7 @@ class RequestService
 		$hashLength = Request::HASH_LENGTH
 	) : Request {
 		if (is_null($timeout)) {
-			$timeout = (new \DateTimeImmutable)
+			$timeout = Clock::now()
 				->add(\DateInterval::createFromDateString($this->timeout));
 		}
 		else if ($timeout === FALSE) {

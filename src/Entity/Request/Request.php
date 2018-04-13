@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Trejjam\Acl\Entity\Request;
 
+use Mangoweb\Clock\Clock;
 use Nette;
 use Doctrine;
 use Kdyby;
@@ -102,7 +103,10 @@ class Request
 			throw new AlreadyUsedRequestException;
 		}
 
-		if ( !is_null($this->timeout) && $this->timeout < new \DateTimeImmutable) {
+		if (
+			!is_null($this->timeout)
+			&& $this->timeout < Clock::now()
+		) {
 			throw new ExpiredRequestException;
 		}
 

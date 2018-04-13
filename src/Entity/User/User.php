@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Trejjam\Acl\Entity\User;
 
+use Mangoweb\Clock\Clock;
 use Nette;
 use Doctrine;
 use Kdyby;
@@ -71,7 +72,7 @@ abstract class User implements Nette\Security\IIdentity
 
 	public function __construct(string $username)
 	{
-		$this->createdDate = new \DateTimeImmutable;
+		$this->createdDate = Clock::now();
 		$this->status = StatusType::STATE_ENABLE;
 		$this->activated = FALSE;
 		$this->roles = new Doctrine\Common\Collections\ArrayCollection;
