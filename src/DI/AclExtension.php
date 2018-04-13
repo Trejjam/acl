@@ -88,6 +88,7 @@ class AclExtension extends Trejjam\BaseExtension\DI\BaseExtension implements IEn
 		}
 
 		$userStorage->setFactory(Trejjam\Acl\UserStorage::class);
+		$userStorage->setType(Trejjam\Acl\UserStorage::class);
 
 		if ($containerBuilder->hasDefinition('security.user')) {
 			$user = $containerBuilder->getDefinition('security.user');
