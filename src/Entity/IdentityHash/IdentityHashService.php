@@ -25,6 +25,10 @@ class IdentityHashService
 	) : IdentityHash {
 		if (is_null($ip)) {
 			$ip = $this->request->getRemoteAddress();
+
+		}
+		if (is_null($ip)) {
+			throw new Trejjam\Acl\InvalidArgumentException;
 		}
 
 		return new IdentityHash($user, $ip, $hashLength);

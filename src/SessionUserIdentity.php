@@ -56,13 +56,8 @@ class SessionUserIdentity implements Nette\Security\IIdentity
 		return $this;
 	}
 
-	/**
-	 * Returns a list of roles that the user is a member of.
-	 *
-	 * @return array
-	 */
 	public function getRoles() : array
 	{
-		throw new Trejjam\Utils\RuntimeException;
+		throw new Trejjam\Acl\UnsupportedMethodException;
 	}
 }

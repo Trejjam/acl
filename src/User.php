@@ -20,7 +20,7 @@ class User extends Nette\Security\User
 	const ROLE_AUTHENTICATED = 'authenticated';
 
 	/**
-	 * @var Nette\Security\IUserStorage|UserStorage
+	 * @var UserStorage
 	 */
 	protected $storage;
 	/**
@@ -38,7 +38,7 @@ class User extends Nette\Security\User
 	public $authenticatedRole;
 
 	public function __construct(
-		Nette\Security\IUserStorage $storage,
+		UserStorage $storage,
 		Nette\Security\IAuthenticator $authenticator = NULL,
 		Nette\Security\IAuthorizator $authorizator = NULL,
 		Trejjam\Acl\Entity\Role\RoleRepository $roleRepository
@@ -76,9 +76,9 @@ class User extends Nette\Security\User
 	}
 
 	/**
-	 * @param int| $username
-	 * @param null $password
-	 * @param bool $enableForceLogin
+	 * @param Entity\User\User|string|null $username
+	 * @param string|null                  $password
+	 * @param bool                         $enableForceLogin
 	 *
 	 * @throws Entity\User\UserNotFoundException
 	 * @throws Entity\User\NotDefinedPasswordException
@@ -92,9 +92,12 @@ class User extends Nette\Security\User
 		bool $enableForceLogin = FALSE
 	) : void {
 		$this->logout(TRUE);
+
 		$identityHash = $this->getAuthenticator()->authenticate(func_get_args());
+
 		$this->storage->setIdentityHash($identityHash);
 		$this->storage->setAuthenticated(TRUE);
+
 		$this->onLoggedIn($this);
 	}
 
@@ -139,7 +142,7 @@ class User extends Nette\Security\User
 	/**
 	 * Is a user in the specified effective role?
 	 *
-	 * @param string|Trejjam\Acl\Entity\Role\Role
+	 * @param string|Trejjam\Acl\Entity\Role\Role $role
 	 *
 	 * @return bool
 	 */

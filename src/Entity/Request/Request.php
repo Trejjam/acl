@@ -29,33 +29,33 @@ class Request
 	private $hash;
 
 	/**
-	 * @var string
+	 * @var string|null
 	 */
-	private $readableHash;
+	private $readableHash = NULL;
 
 	/**
 	 * @var string
 	 *
-	 * @ORM\Column(name="type", type="userRequestType", nullable=true)
+	 * @ORM\Column(name="type", type="userRequestType", nullable=false)
 	 */
-	private $type = NULL;
+	private $type;
 
 	/**
-	 * @var string
+	 * @var bool
 	 *
 	 * @ORM\Column(name="used", type="boolean", options={"default":FALSE}, nullable=false)
 	 */
-	private $used = FALSE;
+	private $used;
 
 	/**
-	 * @var \DateTimeImmutable
+	 * @var \DateTimeImmutable|null
 	 *
 	 * @ORM\Column(name="timeout", type="datetime_immutable", nullable=true)
 	 */
 	private $timeout;
 
 	/**
-	 * @var string
+	 * @var string|null
 	 *
 	 * @ORM\Column(name="extra_value", type="text", length=65535, nullable=true)
 	 */
@@ -122,7 +122,7 @@ class Request
 		return $this->type;
 	}
 
-	public function getExtraValue() : string
+	public function getExtraValue() : ?string
 	{
 		return $this->extraValue;
 	}

@@ -1,0 +1,6 @@
+parameters:
+	ignoreErrors:
+		- '#PHPDoc tag @return with type \(Doctrine\\Common\\Collections\\Collection\&iterable\<[a-zA-Z0-9\\]+\>\)\|Doctrine\\Common\\Collections\\Selectable is not subtype of native type Doctrine\\Common\\Collections\\Collection#'
+
+includes:
+	- ../../vendor/phpstan/phpstan-doctrine/extension.neon

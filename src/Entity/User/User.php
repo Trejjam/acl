@@ -5,7 +5,7 @@ namespace Trejjam\Acl\Entity\User;
 
 use Mangoweb\Clock\Clock;
 use Nette;
-use Doctrine;
+use Doctrine\Common\Collections;
 use Kdyby;
 use Doctrine\ORM\Mapping as ORM;
 use Trejjam\Acl\Entity;
@@ -53,7 +53,7 @@ abstract class User implements Nette\Security\IIdentity
 	protected $createdDate;
 
 	/**
-	 * @var Entity\Role\Role[]|Doctrine\Common\Collections\Collection|Doctrine\Common\Collections\Selectable
+	 * @var Entity\Role\Role[]|Collections\Collection
 	 *
 	 * @ORM\ManyToMany(targetEntity=Entity\Role\Role::class)
 	 * @ORM\JoinTable(name="users__user_role",
@@ -64,7 +64,7 @@ abstract class User implements Nette\Security\IIdentity
 	protected $roles;
 
 	/**
-	 * @var Entity\IdentityHash\IdentityHash[]|Doctrine\Common\Collections\Collection|Doctrine\Common\Collections\Selectable
+	 * @var Entity\IdentityHash\IdentityHash[]|Collections\Collection
 	 *
 	 * @ORM\OneToMany(targetEntity=Entity\IdentityHash\IdentityHash::class, mappedBy="user")
 	 */
@@ -75,8 +75,8 @@ abstract class User implements Nette\Security\IIdentity
 		$this->createdDate = Clock::now();
 		$this->status = StatusType::STATE_ENABLE;
 		$this->activated = FALSE;
-		$this->roles = new Doctrine\Common\Collections\ArrayCollection;
-		$this->identityHash = new Doctrine\Common\Collections\ArrayCollection;
+		$this->roles = new Collections\ArrayCollection;
+		$this->identityHash = new Collections\ArrayCollection;
 
 		$this->setUsername($username);
 	}
@@ -118,9 +118,9 @@ abstract class User implements Nette\Security\IIdentity
 	/**
 	 * Returns a list of roles that the user is a member of.
 	 *
-	 * @return Entity\Role\Role[]|Doctrine\Common\Collections\Collection|Doctrine\Common\Collections\Selectable
+	 * @return Entity\Role\Role[]|Collections\Collection|Collections\Selectable
 	 */
-	public function getRoles()
+	public function getRoles() : Collections\Collection
 	{
 		return $this->roles;
 	}
@@ -131,12 +131,12 @@ abstract class User implements Nette\Security\IIdentity
 	}
 
 	/**
-	 * @return Entity\IdentityHash\IdentityHash[]|Doctrine\Common\Collections\Collection|Doctrine\Common\Collections\Selectable
+	 * @return Entity\IdentityHash\IdentityHash[]|Collections\Collection|Collections\Selectable
 	 */
-	public function getIdentityHash(bool $fetchAll = FALSE)
+	public function getIdentityHash(bool $fetchAll = FALSE) : Collections\Collection
 	{
 		if ( !$fetchAll) {
-			$criteria = Doctrine\Common\Collections\Criteria::create();
+			$criteria = Collections\Criteria::create();
 			$criteria->andWhere($criteria::expr()->in('action', [
 				Entity\IdentityHash\IdentityHashStatus::STATE_NONE,
 				Entity\IdentityHash\IdentityHashStatus::STATE_RELOAD,

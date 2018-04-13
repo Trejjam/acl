@@ -7,7 +7,7 @@ use Doctrine;
 use Nette;
 use Trejjam;
 
-class UserStorage extends Nette\Http\UserStorage
+class UserStorage extends Nette\Http\UserStorage implements Nette\Security\IUserStorage
 {
 	/**
 	 * @var Entity\User\UserRepository
@@ -19,7 +19,7 @@ class UserStorage extends Nette\Http\UserStorage
 	private $identityHashRepository;
 
 	/**
-	 * @var Trejjam\Acl\Entity\IdentityHash\IdentityHash
+	 * @var Trejjam\Acl\Entity\IdentityHash\IdentityHash|null
 	 */
 	protected $identityHash;
 
@@ -41,7 +41,9 @@ class UserStorage extends Nette\Http\UserStorage
 		}
 
 		$this->identityHash = NULL;
-		$this->getSessionSection(TRUE)->identity = NULL;
+		$session = $this->getSessionSection(TRUE);
+		assert(!is_null($session));
+		$session->__set('identity', NULL);
 
 		return $this;
 	}
@@ -74,10 +76,11 @@ class UserStorage extends Nette\Http\UserStorage
 		return $this;
 	}
 
-	public function setSessionIdentityHash(SessionUserIdentity $sessionUserIdentity) : self
+	public function setSessionIdentityHash(?SessionUserIdentity $sessionUserIdentity) : self
 	{
 		$session = $this->getSessionSection(TRUE);
-		$session->identity = $sessionUserIdentity;
+		assert(!is_null($session));
+		$session->__set('identity', $sessionUserIdentity);
 
 		$this->identityHash = NULL;
 
@@ -149,11 +152,11 @@ class UserStorage extends Nette\Http\UserStorage
 
 	public function getSessionIdentity(Nette\Http\SessionSection $session = NULL) : ? SessionUserIdentity
 	{
-		$session = $session ?: $this->getSessionSection(FALSE);
+		$session = $session ?? $this->getSessionSection(FALSE);
 
 		if (
 			!is_null($session)
-			&& !is_null($sessionIdentity = $session->identity)
+			&& !is_null($sessionIdentity = $session->__get('identity'))
 		) {
 			return $sessionIdentity;
 		}

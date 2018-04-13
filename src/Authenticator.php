@@ -40,7 +40,7 @@ class Authenticator implements Nette\Security\IAuthenticator
 	 *
 	 * @param array $credentials
 	 *
-	 * @return IIdentity|Entity\IdentityHash\IdentityHash
+	 * @return Entity\IdentityHash\IdentityHash
 	 * @throws Entity\User\InvalidCredentialsException
 	 * @throws Entity\User\NotActivatedUserException
 	 * @throws Entity\User\NotDefinedPasswordException

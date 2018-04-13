@@ -16,15 +16,16 @@ abstract class Enum extends Doctrine\DBAL\Types\Type
 		throw new Nette\NotImplementedException;
 	}
 
-	public function getSQLDeclaration(array $fieldDeclaration, Doctrine\DBAL\Platforms\AbstractPlatform $platform) : string
-	{
+	public function getSQLDeclaration(
+		array $fieldDeclaration,
+		Doctrine\DBAL\Platforms\AbstractPlatform $platform
+	) : string {
 		return sprintf(
-			'ENUM(%s)',
+			'ENUM(%s) %s',
 			implode(
-				', ',
-				array_map(function ($arr) {
-					return "'" . $arr . "'";
-				}, static::getValues())
+				', ', array_map(function ($arr) : string {
+						return "'{$arr}'";
+					}, static::getValues())
 			), $this->getName()
 		);
 	}

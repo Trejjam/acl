@@ -20,28 +20,24 @@ class Resource
 	use Kdyby\Doctrine\Entities\Attributes\Identifier;
 
 	/**
-	 * @ORM\ManyToOne(targetEntity=Entity\Role\Role::class, cascade={"persist"})
-	 * @ORM\JoinColumn(name="role_id", referencedColumnName="id")
-	 * @var Entity\Role\Role
-	 */
-	private $parent;
-
-	/**
-	 * @ORM\Column(type="string", unique=true)
 	 * @var string
+	 *
+	 * @ORM\Column(type="string", unique=true)
 	 */
 	private $name;
 
 	/**
-	 * @ORM\Column(type="string")
 	 * @var string
+	 *
+	 * @ORM\Column(type="string")
 	 */
 	private $action;
 
 	/**
+	 * @var Entity\Role\Role
+	 *
 	 * @ORM\ManyToOne(targetEntity=Entity\Role\Role::class, inversedBy="resources")
 	 * @ORM\JoinColumn(name="role_id", referencedColumnName="id")
-	 * @var Entity\Role\Role
 	 */
 	private $role;
 
@@ -65,6 +61,9 @@ class Resource
 		return $this->name;
 	}
 
+	/**
+	 * @return string|bool|null
+	 */
 	public function getAction()
 	{
 		if (defined(Nette\Security\IAuthorizator::class . '::' . $this->action)) {

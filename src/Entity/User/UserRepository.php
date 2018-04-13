@@ -18,6 +18,10 @@ class UserRepository
 	 * @var EntityManager
 	 */
 	protected $em;
+	/**
+	 * @var UserService
+	 */
+	protected $userService;
 
 	public function __construct(
 		$userClassName,
@@ -29,10 +33,7 @@ class UserRepository
 		$this->userService = $userService;
 	}
 
-	/**
-	 * @return EntityManager
-	 */
-	public function getEntityManager()
+	public function getEntityManager(): EntityManager
 	{
 		return $this->em;
 	}
