@@ -10,15 +10,17 @@ class IdentityHashStatus extends Entity\Enum
 {
 	const ENUM_NAME = 'identityHashStatus';
 
-	const STATE_NONE      = 'none';
-	const STATE_RELOAD    = 'reload';
-	const STATE_LOGOUT    = 'logout';
-	const STATE_DESTROYED = 'destroyed';
+	const STATE_NONE                  = 'none';
+	const STATE_REQUIRE_SECOND_FACTOR = 'require_second_factor';
+	const STATE_RELOAD                = 'reload';
+	const STATE_LOGOUT                = 'logout';
+	const STATE_DESTROYED             = 'destroyed';
 
 	static public function getValues() : array
 	{
 		return [
 			self::STATE_NONE,
+			self::STATE_REQUIRE_SECOND_FACTOR,
 			self::STATE_RELOAD,
 			self::STATE_LOGOUT,
 			self::STATE_DESTROYED,

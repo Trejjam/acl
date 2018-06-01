@@ -58,7 +58,12 @@ class IdentityHash
 	) {
 		$this->hash = Nette\Utils\Random::generate($hashLength, '0-9A-Z');
 		$this->ip = $ip;
-		$this->action = IdentityHashStatus::STATE_NONE;
+		if ($user->isRequiredSecondFactor()) {
+			$this->action = IdentityHashStatus::STATE_REQUIRE_SECOND_FACTOR;
+		}
+		else {
+			$this->action = IdentityHashStatus::STATE_NONE;
+		}
 		$this->setUser($user);
 	}
 

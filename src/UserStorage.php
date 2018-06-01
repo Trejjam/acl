@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Trejjam\Acl;
 
 use Doctrine;
+use Mangoweb\Clock\Clock;
 use Nette;
 use Trejjam;
 
@@ -19,7 +20,7 @@ class UserStorage extends Nette\Http\UserStorage implements Nette\Security\IUser
 	private $identityHashRepository;
 
 	/**
-	 * @var Trejjam\Acl\Entity\IdentityHash\IdentityHash|null
+	 * @var Entity\IdentityHash\IdentityHash|null
 	 */
 	protected $identityHash;
 
@@ -48,16 +49,8 @@ class UserStorage extends Nette\Http\UserStorage implements Nette\Security\IUser
 		return $this;
 	}
 
-	/**
-	 * Sets the user identity hash.
-	 *
-	 * @param Entity\IdentityHash\IdentityHash|null $identityHash
-	 * @param SessionUserIdentity|null              $previousSessionUserIdentity
-	 *
-	 * @return static
-	 */
 	public function setIdentityHash(
-		Trejjam\Acl\Entity\IdentityHash\IdentityHash $identityHash = NULL,
+		Entity\IdentityHash\IdentityHash $identityHash = NULL,
 		SessionUserIdentity $previousSessionUserIdentity = NULL
 	) : self {
 		$identity = NULL;
@@ -99,7 +92,23 @@ class UserStorage extends Nette\Http\UserStorage implements Nette\Security\IUser
 			}
 		}
 
-		return parent::setAuthenticated($state);
+		parent::setAuthenticated($state);
+
+		$section = $this->getSessionSection(TRUE);
+		$section->__set('authTime', Clock::now()->getTimestamp());
+
+		return $this;
+	}
+
+	public function getAuthTime() : ?\DateTimeImmutable
+	{
+		if ( !$this->isAuthenticated()) {
+			return NULL;
+		}
+
+		$section = $this->getSessionSection(TRUE);
+
+		return new \DateTimeImmutable('@' . $section->__get('authTime'));
 	}
 
 	/**
@@ -120,16 +129,10 @@ class UserStorage extends Nette\Http\UserStorage implements Nette\Security\IUser
 		return $identity;
 	}
 
-	/**
-	 * @param Nette\Http\SessionSection|NULL $session
-	 * @param bool                           $validateHash
-	 *
-	 * @return null|Entity\IdentityHash\IdentityHash
-	 */
 	public function getIdentityHash(
 		Nette\Http\SessionSection $session = NULL,
 		bool $validateHash = TRUE
-	) : ? Trejjam\Acl\Entity\IdentityHash\IdentityHash {
+	) : ?Entity\IdentityHash\IdentityHash {
 		if (is_null($this->identityHash)) {
 			$sessionIdentity = $this->getSessionIdentity($session);
 
@@ -150,7 +153,7 @@ class UserStorage extends Nette\Http\UserStorage implements Nette\Security\IUser
 		return $this->identityHash;
 	}
 
-	public function getSessionIdentity(Nette\Http\SessionSection $session = NULL) : ? SessionUserIdentity
+	public function getSessionIdentity(Nette\Http\SessionSection $session = NULL) : ?SessionUserIdentity
 	{
 		$session = $session ?? $this->getSessionSection(FALSE);
 
@@ -166,7 +169,7 @@ class UserStorage extends Nette\Http\UserStorage implements Nette\Security\IUser
 
 	protected function identityHashValidate(
 		SessionUserIdentity $sessionIdentity,
-		Trejjam\Acl\Entity\IdentityHash\IdentityHash $identityHash
+		Entity\IdentityHash\IdentityHash $identityHash
 	) : ?Entity\IdentityHash\IdentityHash {
 		if ($sessionIdentity->getUserId() !== $identityHash->getUser()->getId()) {
 			return NULL;
@@ -175,6 +178,7 @@ class UserStorage extends Nette\Http\UserStorage implements Nette\Security\IUser
 		switch ($identityHash->getAction()) {
 			case Trejjam\Acl\Entity\IdentityHash\IdentityHashStatus::STATE_NONE:
 			case Trejjam\Acl\Entity\IdentityHash\IdentityHashStatus::STATE_RELOAD:
+			case Trejjam\Acl\Entity\IdentityHash\IdentityHashStatus::STATE_REQUIRE_SECOND_FACTOR:
 				return $identityHash;
 
 			default:

@@ -53,6 +53,13 @@ abstract class User implements Nette\Security\IIdentity
 	protected $createdDate;
 
 	/**
+	 * @var bool
+	 *
+	 * @ORM\Column(name="required_second_factor", type="boolean", nullable=false)
+	 */
+	protected $requiredSecondFactor;
+
+	/**
 	 * @var Entity\Role\Role[]|Collections\Collection
 	 *
 	 * @ORM\ManyToMany(targetEntity=Entity\Role\Role::class)
@@ -79,6 +86,7 @@ abstract class User implements Nette\Security\IIdentity
 		$this->identityHash = new Collections\ArrayCollection;
 
 		$this->setUsername($username);
+		$this->setRequireSecondFactor(FALSE);
 	}
 
 	public function getUsername() : string
@@ -99,6 +107,11 @@ abstract class User implements Nette\Security\IIdentity
 	public function getPassword() : ?string
 	{
 		return $this->password;
+	}
+
+	public function isRequiredSecondFactor() : bool
+	{
+		return $this->requiredSecondFactor;
 	}
 
 	public function hashPassword(string $password) : self
@@ -156,6 +169,13 @@ abstract class User implements Nette\Security\IIdentity
 	public function setUsername(string $username) : self
 	{
 		$this->username = $username;
+
+		return $this;
+	}
+
+	public function setRequireSecondFactor(bool $requireSecondFactor) : self
+	{
+		$this->requiredSecondFactor = $requireSecondFactor;
 
 		return $this;
 	}

@@ -39,8 +39,9 @@ class User extends Nette\Security\User
 
 	public function __construct(
 		UserStorage $storage,
-		Nette\Security\IAuthenticator $authenticator = NULL,
-		Nette\Security\IAuthorizator $authorizator = NULL,
+		Nette\Security\IAuthenticator $authenticator,
+		Nette\Security\IAuthorizator $authorizator,
+
 		Trejjam\Acl\Entity\Role\RoleRepository $roleRepository
 	) {
 		parent::__construct($storage, $authenticator, $authorizator);
@@ -70,7 +71,10 @@ class User extends Nette\Security\User
 			$this->guestRole = new Entity\Role\Role(self::ROLE_GUEST, $this->authenticatedRole);
 		}
 
-		if ($this->isLoggedIn() && is_null($this->getIdentity())) {
+		if (
+			$this->storage->isAuthenticated()
+			&& is_null($this->getIdentity())
+		) {
 			$this->storage->setAuthenticated(FALSE);
 		}
 	}
@@ -99,6 +103,18 @@ class User extends Nette\Security\User
 		$this->storage->setAuthenticated(TRUE);
 
 		$this->onLoggedIn($this);
+	}
+
+	public function isLoggedIn() : bool
+	{
+		if ( !$this->storage->isAuthenticated()) {
+			return FALSE;
+		}
+
+		return !in_array($this->storage->getIdentityHash()->getAction(), [
+			Entity\IdentityHash\IdentityHashStatus::STATE_REQUIRE_SECOND_FACTOR,
+			Entity\IdentityHash\IdentityHashStatus::STATE_DESTROYED,
+		], TRUE);
 	}
 
 	public function impersonate(Trejjam\Acl\Entity\User\User $user) : void
